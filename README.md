@@ -1,2 +1,2 @@
 # talkit-production
-Talkit production web application
+Talkit production web application for deployment.
