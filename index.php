@@ -1,18 +1,25 @@
+<?php
+    if(isset($_POST['join'])){
+        $name = $_POST['unm'];
+        $password  = $_POST['pwd'];
+        require_once "./core/classes.php";
+        $ops = new Operations;
+        $ops->signup($name,$password);
+    }
+?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./UI/css/min.css">
-    <title>Talkit | ChatFactions</title>
+    <title>Talkit | Get started</title>
 </head>
 
 <body>
 <header>
     <div class="title">
-        <!-- <h4>Talkit | ChatFactions</h4> -->
         <img src="./UI//img/logo.png" alt="" height="70px" width="70px" >
     </div>
     <nav>
@@ -25,12 +32,12 @@
 <main class="flex-column">
 
     <h3>Signup now !</h3>
-        <form action="#" method="post">
+        <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
             <label>Username</label> <br>
-            <input type="text" name="" required> <br>
+            <input type="text" name="unm" required> <br>
             <label>Password</label> <br>
-            <input type="password" name="" id=""> <br>
-            <input type="submit" value="Signup" class="btn-primary">
+            <input type="password" name="pwd" id=""> <br>
+            <input type="submit" name="join" value="Signup" class="btn-primary">
         </form>
 </main>
 <script src="./UI/js/err_triggers.js"></script>

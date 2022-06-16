@@ -28,6 +28,7 @@ body {
     box-shadow: none;
     border-radius: 2px;
     font-weight: 100;
+    outline: 0;
 }
 h1,h2,h3,h5{
     color: var(--primary-color)
@@ -95,9 +96,11 @@ form input{
     background-color: rgba(238, 238, 238, 0.671);
     backdrop-filter: blur(10px);   
 }
+
 form input:hover,
 form input:active,
 form input:checked{
+    outline: 0;
     border-bottom: none;
     border-left: none;
     border-right: none;
@@ -228,4 +231,7 @@ form input:checked{
     padding: 5px 10px;
     border-radius: 50px;
     border: none;    
+}
+form input:focus{
+    outline: 0;
 }

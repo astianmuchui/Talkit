@@ -309,6 +309,9 @@ header div img{
     word-wrap: break-word;
    
 }
+input:focus{
+    outline: 0;
+}
 .main-screen .chat-area .form-container{
     width: 100%;
 }

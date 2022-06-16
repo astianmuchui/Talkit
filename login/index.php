@@ -1,3 +1,13 @@
+<?php
+    if(isset($_POST['rejoin'])){
+        $error = "";
+        $nm = $_POST['um'];
+        $pwd = $_POST['pd'];
+        require_once "../core/classes.php";
+        $ops = new Operations;
+        $ops->login($nm,$pwd);
+    }
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,7 +16,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../UI/css/min.css">
-    <title>Talkit | ChatFactions</title>
+    <title>Talkit | Login</title>
 </head>
 
 <body>
@@ -23,19 +33,14 @@
 </header>
 
 <main class="flex-column">
-    <!-- <center>
-        <div class="error" id="error">
-            <span class="flex-column" id="close">&times;</span>
-            <p class="err">Invalid password</p>
-        </div>
-    </center> -->
+    <?php echo $error; ?>
     <h3>    Login to your account</h3>
-        <form action="#" method="post">
+        <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
             <label>Username</label> <br>
-            <input type="text" name="" id="" required> <br>
+            <input type="text" name="um" id="" required> <br>
             <label>Password</label> <br>
-            <input type="password" name="" id=""> <br>
-            <input type="submit" value="Signup" class="btn-primary">
+            <input type="password" name="pd" id=""> <br>
+            <input type="submit" value="Signup" name="rejoin" class="btn-primary">
         </form>
 </main>
 <script src="../UI/js/err_triggers.js"></script>
