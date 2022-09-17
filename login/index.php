@@ -1,6 +1,7 @@
 <?php
+$error = "";
     if(isset($_POST['rejoin'])){
-        $error = "";
+        
         $nm = $_POST['um'];
         $pwd = $_POST['pd'];
         require_once "../core/classes.php";
@@ -10,7 +11,6 @@
 ?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -18,7 +18,6 @@
     <link rel="stylesheet" href="../UI/css/min.css">
     <title>Talkit | Login</title>
 </head>
-
 <body>
 <header>
     <div class="title">
@@ -31,7 +30,6 @@
         </ul>
     </nav>
 </header>
-
 <main class="flex-column">
     <?php echo $error; ?>
     <h3>    Login to your account</h3>
@@ -45,5 +43,4 @@
 </main>
 <script src="../UI/js/err_triggers.js"></script>
 </body>      
-
 </html>

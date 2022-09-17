@@ -1,9 +1,10 @@
 <?php
+session_start();
 class Database {
     private $dbname = "talkit_production";
     private $dbhost = "localhost";
     private $dbuser = "root";
-    private $pwd = "";   
+    private $pwd = "";
     protected function connect(){
         $this->conn = null;
         try{
@@ -22,13 +23,14 @@ class Database {
          echo $e;
       }
       return $this->db;
-   }  
+   }
    protected function escapeChar($var){
       self::vanillaConnect();
       $var = mysqli_real_escape_string($this->db,$var);
       return $var;
    }
-}        
+}
+
 class Operations extends Database{
    protected $method = "AES-128-CTR";
    protected $options = 0;
@@ -36,6 +38,16 @@ class Operations extends Database{
    protected $key = 29366464;
    protected $pepper = "~$:";
    protected $salt = "asascoud@$";
+   public function user_exists($u){
+      $q = "SELECT * FROM users WHERE `uname` = '$u' LIMIT 1";
+      $result = mysqli_query(self::vanillaConnect(),$q);
+      if(mysqli_fetch_assoc($result)){
+         return true;
+      }else{
+         return false;
+      }
+      mysqli_close(self::vanillaConnect());
+     }
    public function signup($unm,$pwd){
         self::connect();
         $unm = self::escapeChar($unm);
@@ -44,9 +56,21 @@ class Operations extends Database{
         $this->hash = $this->pepper.$this->hash.$this->salt;
         $this->iv_length = openssl_cipher_iv_length($this->method);
         $this->encrypted_raw_name = openssl_encrypt($unm,$this->method,$this->key,$this->options,$this->enc_iv);
-        $this->ins = $this->conn->prepare("INSERT INTO users (`uname`,`pwd`) VALUES(:unm,:pwd)");
-        $this->ins->execute(['unm'=>$this->encrypted_raw_name,'pwd'=>$this->hash]);      
-    }  
+         if(self::user_exists($this->encrypted_raw_name) == false){
+            $this->ins = $this->conn->prepare("INSERT INTO users (`uname`,`pwd`) VALUES(:unm,:pwd)");
+            $this->ins->execute(['unm'=>$this->encrypted_raw_name,'pwd'=>$this->hash]);
+         }else{
+            $error = '
+            <center>
+            <div class="error" id="error">
+                <span class="flex-column" id="close">&times;</span>
+                <p class="err">Error: User Exists</p>
+            </div>
+        </center>
+            ';
+            print($error);
+         }
+    }
    public function login($um,$pd){
       self::connect();
       global $error;
@@ -62,6 +86,7 @@ class Operations extends Database{
          // Verify
          if(password_verify($pd,$crpwd)){
             // All okay
+            $_SESSION['user'] = $row->id;
             header("Location: ../profile");
          }else{
             $error = '
@@ -84,7 +109,29 @@ class Operations extends Database{
          ';
       }
       return $error;
-   } 
+   }
+   public function search($str){
+      self::connect();
+      $this->stmt = $this->conn->prepare("SELECT * FROM `users`");
+      $this->stmt->execute();
+      if($rows = $this->stmt->fetchAll()){
+            foreach($rows as $row){
+                 $unm = $row->uname;
+                 $readable = openssl_decrypt($unm,"AES-128-CTR",29366464,0,'1234567891011121');
+                 if(stristr($readable,$str)){
+                     $div = '
+                     <div class="chat">
+                     <img src="../UI/img/avatar.png" alt="" height="30px" width="30px">
+                     <div class="text">
+                         <a  href="#" class="h">'.$readable.'</a> <br>
+                         <small>Lorem ipsum dolor sit amet consectetur adipisicing elit.</small>
+                     </div>
+                 </div>
+                        ';
+                     print $div;
+                 }
+            }
+      }
+   }
 }
-
 ?>

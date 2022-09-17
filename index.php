@@ -1,12 +1,3 @@
-<?php
-    if(isset($_POST['join'])){
-        $name = $_POST['unm'];
-        $password  = $_POST['pwd'];
-        require_once "./core/classes.php";
-        $ops = new Operations;
-        $ops->signup($name,$password);
-    }
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,7 +7,6 @@
     <link rel="stylesheet" href="./UI/css/min.css">
     <title>Talkit | Get started</title>
 </head>
-
 <body>
 <header>
     <div class="title">
@@ -28,9 +18,16 @@
         </ul>
     </nav>
 </header>
-
 <main class="flex-column">
-
+<?php
+    if(isset($_POST['join'])){
+        $name = $_POST['unm'];
+        $password  = $_POST['pwd'];
+        require_once "./core/classes.php";
+        $ops = new Operations;
+        $ops->signup($name,$password);
+    }
+?>
     <h3>Signup now !</h3>
         <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
             <label>Username</label> <br>
@@ -41,6 +38,5 @@
         </form>
 </main>
 <script src="./UI/js/err_triggers.js"></script>
-</body>      
-
+</body>
 </html>
