@@ -11,7 +11,7 @@ body {
     overflow-x: none;
     /* background-color: var(--theme-color); */
     background-image: url("../img/particles.png");
-    
+
 }
 .flex-column{
     display: flex;
@@ -66,8 +66,8 @@ header .title img{
 header nav ul li a{
     position: absolute;
     float: right;
-    
-    right: 30px;    
+
+    right: 30px;
 }
 main{
     width: 100%;
@@ -94,18 +94,14 @@ form input{
     border: 1px solid transparent;
     border-bottom: 1px solid var(--primary-color);
     background-color: rgba(238, 238, 238, 0.671);
-    backdrop-filter: blur(10px);   
+    backdrop-filter: blur(10px);
 }
 
 form input:hover,
 form input:active,
 form input:checked{
     outline: 0;
-    border-bottom: none;
-    border-left: none;
-    border-right: none;
-    border-color: var(--primary-color);
-} 
+}
 .error{
     width: 350px;
     height: 50px;
@@ -173,7 +169,7 @@ form input:checked{
 }
  .chats-container .chats::-webkit-scrollbar-thumb{
     background-color: var(--primary-color);
-    width: 2px;    
+    width: 2px;
 }
 .chats-container .chats::-webkit-scrollbar:hover,
 .chats-container .chats::-webkit-scrollbar-thumb:hover{
@@ -183,24 +179,24 @@ form input:checked{
  .chats-container .chats .chat{
        width: 100%;
        height: 45px;
-       background-color: #ffffff; 
+       background-color: #ffffff;
        box-shadow: 1px 2px 2px 1px #b1b1b1;
-       
+
        transition: all 1s cubic-bezier(0.895, 0.03, 0.685, 0.22);
        border-radius: 10px;
        margin-bottom: 5px;
        box-sizing: border-box;
        padding: 10px 20px;
-       display: grid; 
+       display: grid;
        grid-template-columns: repeat(2,1fr);
 }
- 
+
  .chats-container .chats .chat img{
     background: var(--primary-color);
     border-radius: 50%;
 }
  .chats-container .chats .chat .text{
-    position: relative; 
+    position: relative;
     text-transform: capitalize;
     left: -270px;
     width: 300%;
@@ -210,7 +206,7 @@ form input:checked{
         position: relative;
         left: 0px;
 }
- .chats-container .chats .chat .text small{   
+ .chats-container .chats .chat .text small{
     font-size: 10px;
     word-wrap: none;
 }
@@ -230,7 +226,7 @@ form input:checked{
     box-sizing: border-box;
     padding: 5px 10px;
     border-radius: 50px;
-    border: none;    
+    border: none;
 }
 form input:focus{
     outline: 0;

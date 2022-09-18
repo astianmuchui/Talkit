@@ -35,9 +35,9 @@ class Operations extends Database{
    protected $method = "AES-128-CTR";
    protected $options = 0;
    protected $enc_iv = '1234567891011121';
-   protected $key = 29366464;
-   protected $pepper = "~$:";
-   protected $salt = "asascoud@$";
+   protected $key = '$2y$10$Lvh7toMVlSJjwmMHSZ5ULOWkFITbUuK6mr/NG2YKluolXTpI.lLbu';
+   protected $pepper = '$2y$10$np7bVhRUeR5qQNDlAL.hOOvDaEwZdghmLpz8HjkVJnX0vJbmuyto2';
+   protected $salt = '$2y$10$PYbF/lbCcZ5G4wK39svrRO0k2HM/rj.Iu8NqUxpcI01BmfIZq0J9e';
    public function user_exists($u){
       $q = "SELECT * FROM users WHERE `uname` = '$u' LIMIT 1";
       $result = mysqli_query(self::vanillaConnect(),$q);
@@ -48,14 +48,29 @@ class Operations extends Database{
       }
       mysqli_close(self::vanillaConnect());
      }
+
+   protected function aes_ctr_ssl_encrypt128($data){
+      $method = $this->method;
+      $enc_key = $this->key;
+      $options = $this->options;
+      $enc_iv = $this->enc_iv;
+      $this->iv_length = openssl_cipher_iv_length($method);
+      return openssl_encrypt($data,$method,$enc_key,$options,$enc_iv);
+   }
+   protected function aes_ctr_ssl_decrypt128($data){
+      $method = $this->method;
+      $enc_key = $this->key;
+      $options = $this->options;
+      $enc_iv = $this->enc_iv;
+      return openssl_decrypt($data,$method,$enc_key,$options,$enc_iv);
+   }
    public function signup($unm,$pwd){
         self::connect();
         $unm = self::escapeChar($unm);
         $pwd = self::escapeChar(trim($pwd));
         $this->hash = password_hash($pwd,PASSWORD_DEFAULT);
         $this->hash = $this->pepper.$this->hash.$this->salt;
-        $this->iv_length = openssl_cipher_iv_length($this->method);
-        $this->encrypted_raw_name = openssl_encrypt($unm,$this->method,$this->key,$this->options,$this->enc_iv);
+        $this->encrypted_raw_name = self::aes_ctr_ssl_encrypt128($unm);
          if(self::user_exists($this->encrypted_raw_name) == false){
             $this->ins = $this->conn->prepare("INSERT INTO users (`uname`,`pwd`) VALUES(:unm,:pwd)");
             $this->ins->execute(['unm'=>$this->encrypted_raw_name,'pwd'=>$this->hash]);
@@ -74,8 +89,7 @@ class Operations extends Database{
    public function login($um,$pd){
       self::connect();
       global $error;
-      $this->iv_length = openssl_cipher_iv_length($this->method);
-      $this->raw_name = openssl_encrypt($um,$this->method,$this->key,$this->options,$this->enc_iv);
+      $this->raw_name = self::aes_ctr_ssl_encrypt128($um);
       $this->sr_qr = $this->conn->prepare("SELECT * FROM `users` WHERE `uname`= :uname");
       $this->sr_qr->execute(['uname'=>$this->raw_name]);
       if($row = $this->sr_qr->fetch()){
@@ -117,7 +131,7 @@ class Operations extends Database{
       if($rows = $this->stmt->fetchAll()){
             foreach($rows as $row){
                  $unm = $row->uname;
-                 $readable = openssl_decrypt($unm,"AES-128-CTR",29366464,0,'1234567891011121');
+                 $readable = self::aes_ctr_ssl_decrypt128($unm);
                  if(stristr($readable,$str)){
                      $div = '
                      <div class="chat">

@@ -1,0 +1,90 @@
+@import'root';
+body{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: $theme-color;
+
+    header{
+        width: 100%;
+        height: 50px;
+        background-color: $primary-color;
+
+        .title img{
+            position: relative;
+            
+            left: 10px;
+        }
+    }
+    main{
+        width: 100%;
+        height: 88vh;
+
+        .container{
+            background-color: darken($theme-color,1);
+            box-shadow: 1px 1px 3px 2px darken($theme-color,10);
+            width: 80%;
+            height: 90%;
+            border-radius: 10px;
+
+            form{
+                width: 100%;
+                height: 100%;
+
+                .left{
+                    height: 100%;
+                    width: 100%;
+                    background-color: transparent;
+                }
+                .right{
+                    height: 100%;
+                    width: 100%;
+                    position: relative;
+                    top: -20px;
+
+                    .btn-primary{
+                        background-color: $primary-color;
+                        color: #fff;
+                    }
+                }
+                * textarea{
+                    border: 1px solid transparent;
+                    border-radius: 5px;
+                    background-color: darken($theme-color,6);
+                    margin-bottom: 50px;
+                    width: 400px;
+                    height: 120px;
+                    outline: 0;
+                    color: $primary-color;
+                    box-sizing: border-box;
+                    padding: 10px;
+                }
+                * label{
+                    width: 100%;
+                    text-align: start;
+                    position: relative;
+                    float: left;
+                    left: 80px;
+                    top: -10px;
+                    font-size: 14px;
+                    color: $primary-color;
+                    }
+                * input{
+                    border: 1px solid transparent;
+                    border-radius: 5px;
+                    background-color: darken($theme-color,6);
+                    margin-bottom: 20px;
+                    width: 400px;
+                    height: 40px;
+                    outline: 0;
+                    color: $primary-color;
+                    box-sizing: border-box;
+                    padding: 10px;
+                    :hover,:active{
+                        outline: 0;
+                    }
+                }
+            }
+        }
+    }
+}

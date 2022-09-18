@@ -4,9 +4,45 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../UI/css/profile_setup.css">
     <title>Set Up profile</title>
 </head>
 <body>
-    
+    <header>
+        <div class="title">
+            <img src="../UI//img/logo.png" alt="" height="70px" width="70px" >
+        </div>
+        <nav>
+            <ul>
+            </ul>
+        </nav>
+    </header>
+    <main class="flex-column">
+        <div class="container flex-column">
+            <form action="#" enctype="multipart/form-data" class="grid-2">
+                <div class="left flex-column">
+                    <label>Name</label>
+                    <input type="text" name="" id="">
+                    <label>Username</label>
+                    <input type="text">
+                    <label>Profile Photo</label>
+                    <input type="file" name="" accept="jpg,png" id="">
+                    <label>Bio</label>
+                    <textarea name="" id="" cols="30" rows="10"></textarea>
+                </div>
+                <div class="right flex-column">
+                    <label>Instagram handle (Optional)</label>
+                    <input type="text" name="" id="">
+                    <label>Twitter handle (Optional)</label>
+                    <input type="text" name="" id="">
+                    <label>Website (Optional)</label>
+                    <input type="text" name="" id="">
+                    <label>Linkedin username (Optional)</label>
+                    <input type="text" name="" id="">
+                    <input type="submit" value="Update Profile" class="btn-primary">
+                </div>
+            </form>
+        </div>
+    </main>
 </body>
 </html>
