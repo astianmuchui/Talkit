@@ -5,6 +5,12 @@ class Database {
     private $dbhost = "localhost";
     private $dbuser = "root";
     private $pwd = "";
+    protected $method = "AES-128-CTR";
+    protected $options = 0;
+    protected $enc_iv = '1234567891011121';
+    protected $key = '$2y$10$Lvh7toMVlSJjwmMHSZ5ULOWkFITbUuK6mr/NG2YKluolXTpI.lLbu';
+    protected $pepper = '$2y$10$np7bVhRUeR5qQNDlAL.hOOvDaEwZdghmLpz8HjkVJnX0vJbmuyto2';
+    protected $salt = '$2y$10$PYbF/lbCcZ5G4wK39svrRO0k2HM/rj.Iu8NqUxpcI01BmfIZq0J9e';
     protected function connect(){
         $this->conn = null;
         try{
@@ -29,26 +35,6 @@ class Database {
       $var = mysqli_real_escape_string($this->db,$var);
       return $var;
    }
-}
-
-class Operations extends Database{
-   protected $method = "AES-128-CTR";
-   protected $options = 0;
-   protected $enc_iv = '1234567891011121';
-   protected $key = '$2y$10$Lvh7toMVlSJjwmMHSZ5ULOWkFITbUuK6mr/NG2YKluolXTpI.lLbu';
-   protected $pepper = '$2y$10$np7bVhRUeR5qQNDlAL.hOOvDaEwZdghmLpz8HjkVJnX0vJbmuyto2';
-   protected $salt = '$2y$10$PYbF/lbCcZ5G4wK39svrRO0k2HM/rj.Iu8NqUxpcI01BmfIZq0J9e';
-   public function user_exists($u){
-      $q = "SELECT * FROM users WHERE `uname` = '$u' LIMIT 1";
-      $result = mysqli_query(self::vanillaConnect(),$q);
-      if(mysqli_fetch_assoc($result)){
-         return true;
-      }else{
-         return false;
-      }
-      mysqli_close(self::vanillaConnect());
-     }
-
    protected function aes_ctr_ssl_encrypt128($data){
       $method = $this->method;
       $enc_key = $this->key;
@@ -62,7 +48,34 @@ class Operations extends Database{
       $enc_key = $this->key;
       $options = $this->options;
       $enc_iv = $this->enc_iv;
-      return openssl_decrypt($data,$method,$enc_key,$options,$enc_iv);
+     return openssl_decrypt($data,$method,$enc_key,$options,$enc_iv);
+   }
+}
+class Operations extends Database{
+   public function user_exists($u){
+      $q = "SELECT * FROM users WHERE `uname` = '$u' LIMIT 1";
+      $result = mysqli_query(self::vanillaConnect(),$q);
+      if(mysqli_fetch_assoc($result)){
+         return true;
+      }else{
+         return false;
+      }
+      mysqli_close(self::vanillaConnect());
+     }
+   protected function aes_ctr_ssl_encrypt128($data){
+      $method = $this->method;
+      $enc_key = $this->key;
+      $options = $this->options;
+      $enc_iv = $this->enc_iv;
+      $this->iv_length = openssl_cipher_iv_length($method);
+      return openssl_encrypt($data,$method,$enc_key,$options,$enc_iv);
+   }
+   protected function aes_ctr_ssl_decrypt128($data){
+      $method = $this->method;
+      $enc_key = $this->key;
+      $options = $this->options;
+      $enc_iv = $this->enc_iv;
+     return openssl_decrypt($data,$method,$enc_key,$options,$enc_iv);
    }
    public function signup($unm,$pwd){
         self::connect();
@@ -71,9 +84,12 @@ class Operations extends Database{
         $this->hash = password_hash($pwd,PASSWORD_DEFAULT);
         $this->hash = $this->pepper.$this->hash.$this->salt;
         $this->encrypted_raw_name = self::aes_ctr_ssl_encrypt128($unm);
+        // check if user exists
          if(self::user_exists($this->encrypted_raw_name) == false){
             $this->ins = $this->conn->prepare("INSERT INTO users (`uname`,`pwd`) VALUES(:unm,:pwd)");
             $this->ins->execute(['unm'=>$this->encrypted_raw_name,'pwd'=>$this->hash]);
+            header("Location: ./profile/recovery/");
+            $_SESSION['name'] = $this->encrypted_raw_name;
          }else{
             $error = '
             <center>
@@ -85,6 +101,21 @@ class Operations extends Database{
             ';
             print($error);
          }
+    }
+    public function set_recovery($qn,$ans,$name){
+      $this->qn = $qn;
+      $this->ans = $ans;
+      self::connect();
+      $queries = [
+         "UPDATE `users` SET `rqn`=$qn WHERE `users`.`uname`='$name' ",
+         "UPDATE `users` SET `rqa`= '$ans' WHERE `users`.`uname`='$name'"
+   ];
+      foreach($queries as $q){
+         $inserted = $this->conn->query($q);
+      }
+      if($inserted){
+         header("Location: ../");
+      }
     }
    public function login($um,$pd){
       self::connect();
@@ -147,5 +178,48 @@ class Operations extends Database{
             }
       }
    }
+}
+class Session_Functions extends Database{
+   private $id;
+   private $uname;
+   public function fetchById($id){
+      if(gettype($id) == "integer"){
+         self::connect();
+         $stmt = $this->conn->prepare("SELECT * FROM `users` WHERE `uid`= :id");
+         $stmt->execute([":id"=>$id]);
+         $data = $stmt->fetch();
+         while($data){
+            $name = self::aes_ctr_ssl_decrypt128($data->uname);
+            $arr = ["id"=>$data->uid,"name"=>$name];
+            return $arr;
+         }
+      }
+   }
+   public function fetchByName($nm){
+      if(gettype($nm) == "string"){
+         self::connect();
+         $stmt = $this->conn->prepare("SELECT * FROM `users` WHERE `uname`= :uname");
+         $stmt->execute([":uname"=>$nm]);
+         $data = $stmt->fetch();
+         while($data){
+            $name = self::aes_ctr_ssl_decrypt128($data->uname);
+            $arr = ["id"=>$data->uid,"name"=>$name];
+            return $arr;
+         }
+      }
+   }
+   // Function to serve user data more feasibly on pages
+   public function serve($variable){
+      // The function should take either a string or an int
+      switch(gettype($variable)){
+         case "string":
+            self::fetchByName($variable);
+         case "integer":
+            self::fetchById($variable);
+      }
+   }
+}
+class Json_parser{
+   // Class to return any JSON Data needed
 }
 ?>

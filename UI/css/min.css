@@ -148,12 +148,12 @@ form input:checked{
     color: var(--primary-color);
 }
  .chats-container .chats{
-    padding-top: 50px;
+    padding-top: 5%;
     height: 60vh;
     background-color: transparent;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    align-items: top;
     padding-left:20px;
     padding-top: 60px ;
     overflow-y: auto;
