@@ -88,8 +88,10 @@ class Operations extends Database{
          if(self::user_exists($this->encrypted_raw_name) == false){
             $this->ins = $this->conn->prepare("INSERT INTO users (`uname`,`pwd`) VALUES(:unm,:pwd)");
             $this->ins->execute(['unm'=>$this->encrypted_raw_name,'pwd'=>$this->hash]);
-            header("Location: ./profile/recovery/");
+
             $_SESSION['name'] = $this->encrypted_raw_name;
+
+            header("Location: ./profile/recovery/");
          }else{
             $error = '
             <center>
@@ -193,6 +195,7 @@ class Session_Functions extends Database{
             $arr = ["id"=>$data->uid,"name"=>$name];
             return $arr;
          }
+
       }
    }
    public function fetchByName($nm){
@@ -203,9 +206,14 @@ class Session_Functions extends Database{
          $data = $stmt->fetch();
          while($data){
             $name = self::aes_ctr_ssl_decrypt128($data->uname);
-            $arr = ["id"=>$data->uid,"name"=>$name];
+            $unam = "@".strtolower((trim($name)));
+            if(strpos($unam," ")){
+               $unam = str_replace(" ","",$unam);
+            }
+            $arr = ["id"=>$data->uid,"name"=>$name,"uname"=>$unam];
             return $arr;
          }
+
       }
    }
    // Function to serve user data more feasibly on pages
@@ -213,13 +221,10 @@ class Session_Functions extends Database{
       // The function should take either a string or an int
       switch(gettype($variable)){
          case "string":
-            self::fetchByName($variable);
+           return self::fetchByName($variable);
          case "integer":
-            self::fetchById($variable);
+           return self::fetchById($variable);
       }
    }
-}
-class Json_parser{
-   // Class to return any JSON Data needed
 }
 ?>

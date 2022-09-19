@@ -1,3 +1,9 @@
+<?php
+
+    require "../core/classes.php";
+    $server = new Session_Functions;
+    $arr = $server->serve($_SESSION['name']);
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,7 +28,8 @@
             <div class="left grid-1">
                 <img src="../UI/img/model.jpg" alt="" height="" width="300px">
                 <div class="bio " >
-                    <strong class="name">Alice Myers</strong>
+                    <strong class="name"></strong>
+                    <small class="text-primary"><?php echo $arr["uname"] ?></small>
                     <small>Resolve to perform what you ought, perform without fail what you resolve</small>
                     <div class="icons grid-6">
                             <a href="#"><i class="fab fa-instagram"></i></a>
