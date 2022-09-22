@@ -1,5 +1,5 @@
 <?php
-    require_once "../../core/classes.php";
+    require_once "../../core/core.php";
     $name = $_SESSION['name'];
     $sfns = new Session_Functions;
     // Don't take the term wrongly

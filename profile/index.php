@@ -1,6 +1,6 @@
 <?php
 
-    require "../core/classes.php";
+    require "../core/core.php";
     $server = new Session_Functions;
     $arr = $server->serve($_SESSION['name']);
 ?>
@@ -39,7 +39,7 @@
                     </div>
                     <div class="buttons grid-3">
                         <a href="#" class="btn-primary flex-column"><i class="fas fa-inbox child" title="Messages" aria-hidden="true"></i></a>
-                        <a href="#" class="btn-primary flex-column" ><i class="fas fa-pencil-alt"title="Edit Profile"  ></i> </a>
+                        <a href="./setup/" class="btn-primary flex-column" ><i class="fas fa-pencil-alt"title="Edit Profile"  ></i> </a>
                         <a href="#" class="btn-primary flex-column" ><i class="fas fa-sign-out-alt finl" title="logout" aria-hidden="true"></i> </a>
                     </div>
                 </div>

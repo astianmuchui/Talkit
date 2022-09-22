@@ -1,7 +1,7 @@
 <?php
    $str = $_GET['search'];
    if($str){
-      include "../classes.php";
+      include "../core.php";
       $ops = new Operations;
       $ops->search($str);
    }

@@ -1,10 +1,10 @@
 <?php
 $error = "";
     if(isset($_POST['rejoin'])){
-        
+
         $nm = $_POST['um'];
         $pwd = $_POST['pd'];
-        require_once "../core/classes.php";
+        require_once "../core/core.php";
         $ops = new Operations;
         $ops->login($nm,$pwd);
     }
@@ -21,7 +21,6 @@ $error = "";
 <body>
 <header>
     <div class="title">
-        <!-- <h4>Talkit | ChatFactions</h4> -->
         <img src="../UI//img/logo.png" alt="" height="70px" width="70px" >
     </div>
     <nav>
@@ -38,9 +37,9 @@ $error = "";
             <input type="text" name="um" id="" required> <br>
             <label>Password</label> <br>
             <input type="password" name="pd" id=""> <br>
-            <input type="submit" value="Signup" name="rejoin" class="btn-primary">
+            <input type="submit" value="Login" name="rejoin" class="btn-primary">
         </form>
 </main>
 <script src="../UI/js/err_triggers.js"></script>
-</body>      
+</body>
 </html>

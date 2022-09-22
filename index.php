@@ -23,7 +23,7 @@
     if(isset($_POST['join'])){
         $name = $_POST['unm'];
         $password  = $_POST['pwd'];
-        require_once "./core/classes.php";
+        require_once "./core/core.php";
         $ops = new Operations;
         $ops->signup($name,$password);
     }

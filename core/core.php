@@ -4,7 +4,7 @@ class Database {
     private $dbname = "talkit_production";
     private $dbhost = "localhost";
     private $dbuser = "root";
-    private $pwd = "";
+    private $pwd = "12345";
     protected $method = "AES-128-CTR";
     protected $options = 0;
     protected $enc_iv = '1234567891011121';
@@ -51,6 +51,12 @@ class Database {
      return openssl_decrypt($data,$method,$enc_key,$options,$enc_iv);
    }
 }
+class Media{
+   public function __construct()
+   {
+
+   }
+}
 class Operations extends Database{
    public function user_exists($u){
       $q = "SELECT * FROM users WHERE `uname` = '$u' LIMIT 1";
@@ -83,6 +89,11 @@ class Operations extends Database{
         $pwd = self::escapeChar(trim($pwd));
         $this->hash = password_hash($pwd,PASSWORD_DEFAULT);
         $this->hash = $this->pepper.$this->hash.$this->salt;
+         $unm = trim(strtolower(trim("@".$unm)));
+         if(strpos($unm," ")){
+            $unm = str_replace(" ","",$unm);
+         }
+
         $this->encrypted_raw_name = self::aes_ctr_ssl_encrypt128($unm);
         // check if user exists
          if(self::user_exists($this->encrypted_raw_name) == false){
@@ -134,6 +145,7 @@ class Operations extends Database{
          if(password_verify($pd,$crpwd)){
             // All okay
             $_SESSION['user'] = $row->id;
+            $_SESSION['name'] = $this->raw_name;
             header("Location: ../profile");
          }else{
             $error = '
@@ -180,6 +192,10 @@ class Operations extends Database{
             }
       }
    }
+   public function setup_profile(){
+      self::connect();
+
+   }
 }
 class Session_Functions extends Database{
    private $id;
@@ -206,7 +222,7 @@ class Session_Functions extends Database{
          $data = $stmt->fetch();
          while($data){
             $name = self::aes_ctr_ssl_decrypt128($data->uname);
-            $unam = "@".strtolower((trim($name)));
+            $unam = strtolower((trim($name)));
             if(strpos($unam," ")){
                $unam = str_replace(" ","",$unam);
             }

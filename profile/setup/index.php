@@ -1,3 +1,8 @@
+<?php
+    include "../../core/core.php";
+    $sfns = new Session_Functions;
+    $arr = $sfns->serve($_SESSION['name']);
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
