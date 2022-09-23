@@ -1,10 +1,16 @@
+/*
+   Talkit V 2.0
+   Author: Sebastian Muchui
+   All rights reserved
+   - Still in development since december 2020
+*/
 <?php
 session_start();
 class Database {
     private $dbname = "talkit_production";
     private $dbhost = "localhost";
     private $dbuser = "root";
-    private $pwd = "12345";
+    private $pwd = "";
     protected $method = "AES-128-CTR";
     protected $options = 0;
     protected $enc_iv = '1234567891011121';
@@ -12,16 +18,17 @@ class Database {
     protected $pepper = '$2y$10$np7bVhRUeR5qQNDlAL.hOOvDaEwZdghmLpz8HjkVJnX0vJbmuyto2';
     protected $salt = '$2y$10$PYbF/lbCcZ5G4wK39svrRO0k2HM/rj.Iu8NqUxpcI01BmfIZq0J9e';
     protected function connect(){
-        $this->conn = null;
-        try{
-           $this->conn = new PDO('mysql:host='.$this->dbhost.';dbname='.$this->dbname,$this->dbuser,$this->pwd);
-           $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-           $this->conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE,PDO::FETCH_OBJ);
-        }catch(PDOException $e){
-           echo $e->getMessage();
-        }
-        return $this->conn;
-     }
+   $this->conn = null;
+   
+   try{
+      $this->conn = new PDO('mysql:host='.$this->dbhost.';dbname='.$this->dbname,$this->dbuser,$this->pwd);
+      $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+      $this->conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE,PDO::FETCH_OBJ);
+   }catch(PDOException $e){
+      echo $e->getMessage();
+   }
+   return $this->conn;
+}
    protected function vanillaConnect(){
       try{
          $this->db = mysqli_connect($this->dbhost,$this->dbuser,$this->pwd,$this->dbname);
@@ -51,10 +58,31 @@ class Database {
      return openssl_decrypt($data,$method,$enc_key,$options,$enc_iv);
    }
 }
+// Media class to handle uploads
 class Media{
-   public function __construct()
-   {
-
+  public function upload_image($file,$folder="./media/",$filename=NULL,$path=NULL,$formats=["jpg","jpeg","png"]){
+   $filename = basename($file);
+   $path = $folder.$filename;
+   $file_ext = strtolower(pathinfo($filename,PATHINFO_EXTENSION));
+   if(in_array($file_ext,$formats)){
+      if(move_uploaded_file($file,$path)){
+         return $path;
+      }else{
+         return false;
+         }
+      }
+   }
+   public function uploadDocument($file,$folder="./media/",$filename,$path,$formats=["pdf","docx","doc","txt"]){
+         $filename = basename($file);
+      $path = $folder.$filename;
+      $file_ext = strtolower(pathinfo($filename,PATHINFO_EXTENSION));
+      if(in_array($file_ext,$formats)){
+         if(move_uploaded_file($file,$path)){
+            return $path;
+         }else{
+            return false;
+         }
+      }
    }
 }
 class Operations extends Database{
@@ -93,15 +121,12 @@ class Operations extends Database{
          if(strpos($unm," ")){
             $unm = str_replace(" ","",$unm);
          }
-
         $this->encrypted_raw_name = self::aes_ctr_ssl_encrypt128($unm);
         // check if user exists
          if(self::user_exists($this->encrypted_raw_name) == false){
             $this->ins = $this->conn->prepare("INSERT INTO users (`uname`,`pwd`) VALUES(:unm,:pwd)");
             $this->ins->execute(['unm'=>$this->encrypted_raw_name,'pwd'=>$this->hash]);
-
             $_SESSION['name'] = $this->encrypted_raw_name;
-
             header("Location: ./profile/recovery/");
          }else{
             $error = '
@@ -192,9 +217,20 @@ class Operations extends Database{
             }
       }
    }
-   public function setup_profile(){
+   public function setup_profile($id,$n,$p,$b,$i,$t,$w,$l){
       self::connect();
-
+      $this->stmt = $this->conn->prepare("UPDATE `users` SET `name`=:n,`profile_photo`=:p,`bio`=:b,`instagram`=:i,`twitter`=:t,`website`=:w,`linkedin`=:l WHERE `users`.`id` = :id");
+      // Encrypt all data
+      $media = new Media;
+      // Upload image
+      $this->img = $media->upload_image($p);
+      $this->name = self::aes_ctr_ssl_encrypt128($n);
+      $this->bio = self::aes_ctr_ssl_encrypt128($b);
+      $this->instagram = self::aes_ctr_ssl_encrypt128($i);
+      $this->twitter = self::aes_ctr_ssl_encrypt128($t);
+      $this->website = self::aes_ctr_ssl_encrypt128($w);
+      $this->linkedin = self::aes_ctr_ssl_encrypt128($l);
+      $this->stmt->execute(['id'=>$id,'n'=>$this->name,'p'=>$p,'b'=>$this->bio,'i'=>$this->instagram,'t'=>$this->twitter,'w'=>$this->website,'l'=>$this->linkedin]);
    }
 }
 class Session_Functions extends Database{
@@ -229,7 +265,6 @@ class Session_Functions extends Database{
             $arr = ["id"=>$data->uid,"name"=>$name,"uname"=>$unam];
             return $arr;
          }
-
       }
    }
    // Function to serve user data more feasibly on pages
