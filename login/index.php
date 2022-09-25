@@ -1,7 +1,6 @@
 <?php
 $error = "";
     if(isset($_POST['rejoin'])){
-
         $nm = $_POST['um'];
         $pwd = $_POST['pd'];
         require_once "../core/core.php";
