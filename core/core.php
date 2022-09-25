@@ -63,13 +63,7 @@ class Media extends Database
 {
 
    public $enctd;
-   // Function to upload any type of file
-   /*
-      @params
-      file -> The file submitted
-      formats[arr] -> An array of file extensions that you want
-      directory-> The destination of the file
-   */
+
    public function replicateFile($file,$formats,$directory,$tmp){
       global $error;
       $error = NULL;
@@ -99,6 +93,32 @@ class Media extends Database
          }
       }
          return $this->enctd;
+
+   }
+   // Function to upload any type of file
+   /*
+      @params
+      file -> The file submitted
+      formats[arr] -> An array of file extensions that you want
+      directory-> The destination of the file
+   */
+   public function UploadFile($file="",$folder="",$tmp="",$formats=[]){
+      $filename = basename($file);
+      $path = $folder.$filename;
+      $extension = pathinfo($path,PATHINFO_EXTENSION);
+      if(gettype($formats) == "array"){
+         if(in_array($extension,$formats)){
+            if(move_uploaded_file($tmp,$path)){
+               return true;
+            }else{
+               return false;
+            }
+         }else{
+            return false;
+         }
+      }else{
+         return false;
+      }
 
    }
 }
