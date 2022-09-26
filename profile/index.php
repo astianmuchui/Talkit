@@ -41,7 +41,6 @@
                             <a href="<?php echo $arr['site'] ?>" target="_blank"><i class="fas fa-link" ></i></a>
                             <a href="https://linkedin.com/in/<?php echo $arr['linkedin'] ?>"target="_blank"><i class="fab fa-linkedin"></i></a>
                     </div>
-
                 </div>
             </div>
             <div class="right">

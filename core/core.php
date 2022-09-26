@@ -283,6 +283,15 @@ class Operations extends Database{
             }
       }
    }
+   /*
+      TODO:
+      Delete initial profile photo
+      This is for memory management purposes + User data integrity
+
+      TO TRY:
+       Compression
+       Some weird security function for the files
+   */
    public function setup_profile($id,$u,$n,$p,$b,$i,$t,$w,$l,$tmp){
       self::connect();
       $this->stmt = $this->conn->prepare("UPDATE `users` SET  `uname`=:u, `name`=:n,`profile_photo`=:p,`bio`=:b,`ig_handle`=:i,`tw_handle`=:t,`site`=:w,`linkedin`=:l WHERE `users`.`uid` = :id");
