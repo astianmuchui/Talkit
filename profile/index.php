@@ -2,6 +2,7 @@
     require "../core/core.php";
     $server = new Session_Functions;
     $arr = $server->serve($_SESSION['name']);
+    $img = $arr["photo"];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -18,29 +19,29 @@
             <img src="../UI//img/logo.png" alt="" height="70px" width="70px" >
         </div>
         <nav>
-            <ul>
-            </ul>
+        <div class="buttons grid-3">
+            <a href="#" class="btn-primary flex-column"><i class="fas fa-inbox child" title="Messages" aria-hidden="true"></i></a>
+            <a href="./setup/" class="btn-primary flex-column" ><i class="fas fa-pencil-alt"title="Edit Profile"  ></i> </a>
+            <a href="#" class="btn-primary flex-column" ><i class="fas fa-sign-out-alt finl" title="logout" aria-hidden="true"></i> </a>
+        </div>
         </nav>
     </header>
     <main class="flex-column">
         <div class="cont">
             <div class="left grid-1">
-                <img src="../UI/img/model.jpg" alt="" height="" width="300px">
+                <img src="<?php echo "../core/media/img/".$arr["photo"] ?>"  height="250px" width="300px">
+                <br>
                 <div class="bio " >
-                    <strong class="name"></strong>
+                    <strong class="name"><?php  echo $arr["name"] ?></strong>
                     <small class="text-primary">@<?php echo $arr["uname"] ?></small>
-                    <small>Resolve to perform what you ought, perform without fail what you resolve</small>
+                    <small><?php  echo $arr["bio"]?></small>
                     <div class="icons grid-6">
-                            <a href="#"><i class="fab fa-instagram"></i></a>
-                            <a href="#"><i class="fab fa-twitter"></i></a>
-                            <a href="#"><i class="fas fa-link"></i></a>
-                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="https://instagram.com/<?php echo $arr['ig'] ?>" target="_blank"><i class="fab fa-instagram" ></i></a>
+                            <a href="https://twitter.com/<?php echo $arr['twitter'] ?>"target="_blank"><i class="fab fa-twitter"></i></a>
+                            <a href="<?php echo $arr['site'] ?>" target="_blank"><i class="fas fa-link" ></i></a>
+                            <a href="https://linkedin.com/in/<?php echo $arr['linkedin'] ?>"target="_blank"><i class="fab fa-linkedin"></i></a>
                     </div>
-                    <div class="buttons grid-3">
-                        <a href="#" class="btn-primary flex-column"><i class="fas fa-inbox child" title="Messages" aria-hidden="true"></i></a>
-                        <a href="./setup/" class="btn-primary flex-column" ><i class="fas fa-pencil-alt"title="Edit Profile"  ></i> </a>
-                        <a href="#" class="btn-primary flex-column" ><i class="fas fa-sign-out-alt finl" title="logout" aria-hidden="true"></i> </a>
-                    </div>
+
                 </div>
             </div>
             <div class="right">

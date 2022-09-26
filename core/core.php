@@ -64,12 +64,13 @@ class Media extends Database
 
    public $enctd;
 
-   public function replicateFile($file,$formats,$directory,$tmp){
+   public function replicateFile($file="",$formats=[],$directory="",$tmp=""){
       global $error;
       $error = NULL;
       if($file==NULL || $formats == NULL || $directory==NULL || $tmp== NULL){
-         $error = "Provide all parameters";
-      }else if($file !==NULL && $formats!==NULL && $directory!==NULL && $tmp !== NULL){
+
+      }else{
+
          if(gettype($formats) == "array"){
             $filename = basename($file);
             $path = $directory.$filename;
@@ -82,11 +83,28 @@ class Media extends Database
                      fwrite($file,$content);
                      fclose($file);
                      $this->enctd = self::aes_ctr_ssl_encrypt128($filename);
+                  }else{
+                     $error = '
+                     <center>
+                     <div class="error" id="error">
+                         <span class="flex-column" id="close">&times;</span>
+                         <p class="err"> Unable to upload file</p>
+                     </div>
+                 </center>
+                     ';
                   }
                }catch(Exception $e){
                   echo $e;
                }
-
+            }else{
+               $error = '
+               <center>
+               <div class="error" id="error">
+                   <span class="flex-column" id="close">&times;</span>
+                   <p class="err"> Invalid file format </p>
+               </div>
+           </center>
+               ';
             }
          }else{
             $error = "Formats must be an array";
@@ -265,14 +283,15 @@ class Operations extends Database{
             }
       }
    }
-   public function setup_profile($id,$n,$p,$b,$i,$t,$w,$l,$tmp){
+   public function setup_profile($id,$u,$n,$p,$b,$i,$t,$w,$l,$tmp){
       self::connect();
-      $this->stmt = $this->conn->prepare("UPDATE `users` SET `name`=:n,`profile_photo`=:p,`bio`=:b,`ig_handle`=:i,`tw_handle`=:t,`site`=:w,`linkedin`=:l WHERE `users`.`uid` = :id");
+      $this->stmt = $this->conn->prepare("UPDATE `users` SET  `uname`=:u, `name`=:n,`profile_photo`=:p,`bio`=:b,`ig_handle`=:i,`tw_handle`=:t,`site`=:w,`linkedin`=:l WHERE `users`.`uid` = :id");
       // Encrypt all data
       $media = new Media;
       $img= $media->replicateFile($p,["jpg","png","jpeg"],"../../core/media/img/",$tmp);
       // Upload image
       if($img){
+         $this->uname = self::aes_ctr_ssl_encrypt128($u);
          $this->encImg = self::aes_ctr_ssl_encrypt128($img);
          $this->name = self::aes_ctr_ssl_encrypt128($n);
          $this->bio = self::aes_ctr_ssl_encrypt128($b);
@@ -280,7 +299,11 @@ class Operations extends Database{
          $this->twitter = self::aes_ctr_ssl_encrypt128($t);
          $this->website = self::aes_ctr_ssl_encrypt128($w);
          $this->linkedin = self::aes_ctr_ssl_encrypt128($l);
-         $this->stmt->execute(['id'=>$id,'n'=>$this->name,'p'=>$this->encImg,'b'=>$this->bio,'i'=>$this->instagram,'t'=>$this->twitter,'w'=>$this->website,'l'=>$this->linkedin]);
+         $update =  $this->stmt->execute(['id'=>$id,'u'=>$this->uname,'n'=>$this->name,'p'=>$this->encImg,'b'=>$this->bio,'i'=>$this->instagram,'t'=>$this->twitter,'w'=>$this->website,'l'=>$this->linkedin]);
+         if($update){
+            $_SESSION['name'] = $this->uname;
+            header("Location: ../");
+         }
       }
 
    }
@@ -293,11 +316,20 @@ class Session_Functions extends Database{
          self::connect();
          $stmt = $this->conn->prepare("SELECT * FROM `users` WHERE `uid`= :id");
          $stmt->execute([":id"=>$id]);
-         $data = $stmt->fetch();
+         $data = $stmt->fetch(PDO::FETCH_OBJ);
          while($data){
             $name = self::aes_ctr_ssl_decrypt128($data->uname);
-            $arr = ["id"=>$data->uid,"name"=>$name];
-            return $arr;
+            $nm = self::aes_ctr_ssl_decrypt128($data->name);
+            $rqn = self::aes_ctr_ssl_decrypt128($data->rqn);
+            $rqa = self::aes_ctr_ssl_decrypt128($data->rqa);
+            $photo = self::aes_ctr_ssl_decrypt128(self::aes_ctr_ssl_decrypt128($data->profile_photo));
+             $bio  = self::aes_ctr_ssl_decrypt128($data->bio);
+             $ig =  self::aes_ctr_ssl_decrypt128($data->ig_handle);
+             $twitter = self::aes_ctr_ssl_decrypt128($data->tw_handle);
+             $site = self::aes_ctr_ssl_decrypt128($data->site);
+             $linkedin = self::aes_ctr_ssl_decrypt128($data->linkedin);
+             $arr = ["id"=>$data->uid,"uname"=>$name,"name"=>$nm,"rqn"=>$rqn,"rqa"=>$rqa,"photo"=>$photo,"bio"=>$bio,"ig"=>$ig,"twitter"=>$twitter,"site"=>$site,"linkedin"=>$linkedin];
+             return $arr;
          }
       }
    }
@@ -309,11 +341,20 @@ class Session_Functions extends Database{
          $data = $stmt->fetch();
          while($data){
             $name = self::aes_ctr_ssl_decrypt128($data->uname);
+            $nm = self::aes_ctr_ssl_decrypt128($data->name);
+            $rqn = self::aes_ctr_ssl_decrypt128($data->rqn);
+            $rqa = self::aes_ctr_ssl_decrypt128($data->rqa);
+            $photo = self::aes_ctr_ssl_decrypt128(self::aes_ctr_ssl_decrypt128($data->profile_photo));
+             $bio  = self::aes_ctr_ssl_decrypt128($data->bio);
+             $ig =  self::aes_ctr_ssl_decrypt128($data->ig_handle);
+             $twitter = self::aes_ctr_ssl_decrypt128($data->tw_handle);
+             $site = self::aes_ctr_ssl_decrypt128($data->site);
+             $linkedin = self::aes_ctr_ssl_decrypt128($data->linkedin);
             $unam = strtolower((trim($name)));
             if(strpos($unam," ")){
                $unam = str_replace(" ","",$unam);
             }
-            $arr = ["id"=>$data->uid,"name"=>$name,"uname"=>$unam];
+            $arr = ["id"=>$data->uid,"uname"=>$name,"name"=>$nm,"rqn"=>$rqn,"rqa"=>$rqa,"photo"=>$photo,"bio"=>$bio,"ig"=>$ig,"twitter"=>$twitter,"site"=>$site,"linkedin"=>$linkedin];
             return $arr;
          }
       }

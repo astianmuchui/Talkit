@@ -12,7 +12,7 @@ body{
 
         .title img{
             position: relative;
-            
+
             left: 10px;
         }
     }
@@ -87,4 +87,7 @@ body{
             }
         }
     }
+}
+.err{
+    z-index: 2;
 }

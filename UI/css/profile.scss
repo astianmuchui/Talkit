@@ -87,6 +87,23 @@ body{
         position: sticky;
         z-index: 999;
         top: 0;
+        display: inline-flex;
+        nav{
+            position: relative;
+            left: 85%;
+            top: 3%;
+            .buttons{
+                margin-left: -5%;
+                margin-top: 1%;
+                a{
+                    width: 18px;
+                    height: 18px;
+
+                    border-radius: 78%;
+                }
+            }
+        }
+
         .title{
             position: relative;
             top: -10px;
@@ -118,7 +135,7 @@ body{
                 }
                 .bio{
                     position: relative;
-                    top: -80px;
+                    top: -100px;
                     height: 100px;
                     width: 300px;
                     border-radius: 5px;
@@ -162,16 +179,7 @@ body{
 
                         }
                     }
-                    .buttons{
-                        margin-top: 5%;
-                        margin-left: -5%;
-                        a{
-                            width: 18px;
-                            height: 18px;
 
-                            border-radius: 78%;
-                        }
-                    }
                 }
             }
             .right{

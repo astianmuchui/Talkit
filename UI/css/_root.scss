@@ -86,3 +86,46 @@ body{
     margin: 0;
     padding: 0;
 }
+.error{
+    width: 350px;
+    height: 45px;
+    background-color: white;
+    border-right: 3px solid rgb(155, 28, 28);
+    display: grid;
+    grid-template-columns: repeat(2,1fr);
+    animation: fade 1s ease-in forwards 1;
+    border-radius: 10px;
+    margin-bottom:1%;
+    margin-top: 1%;
+
+}
+.error span{
+
+    padding: 3px;
+    border-radius: 50%;
+    background-color: rgb(255, 255, 255);
+    position: relative;
+    width: 25px;
+    height: 25px;
+    top: 5px;
+    left: 5px ;
+    font-size: 20px;
+    color: rgb(0, 0, 0);
+    border: 2px solid firebrick;
+    cursor: pointer;
+
+}
+.error .err{
+    position: relative;
+    left: -80px;
+    top: -5px;
+    color: rgb(126, 15, 15);
+}
+@keyframes fade{
+    0%{
+        opacity: 0;
+    }
+    100%{
+        opacity: 1;
+    }
+}
