@@ -61,16 +61,12 @@ class Database {
 // Class to handle files
 class Media extends Database
 {
-
    public $enctd;
-
    public function replicateFile($file="",$formats=[],$directory="",$tmp=""){
       global $error;
       $error = NULL;
       if($file==NULL || $formats == NULL || $directory==NULL || $tmp== NULL){
-
       }else{
-
          if(gettype($formats) == "array"){
             $filename = basename($file);
             $path = $directory.$filename;
@@ -287,7 +283,6 @@ class Operations extends Database{
       TODO:
       Delete initial profile photo
       This is for memory management purposes + User data integrity
-
       TO TRY:
        Compression
        Some weird security function for the files
