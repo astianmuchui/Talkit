@@ -42,7 +42,7 @@ class Database {
       $var = mysqli_real_escape_string($this->db,$var);
       return $var;
    }
-   protected function aes_ctr_ssl_encrypt128($data){
+   protected function aes_ctr_ssl_encrypt128(int | string | array | object $data){
       $method = $this->method;
       $enc_key = $this->key;
       $options = $this->options;
@@ -50,13 +50,14 @@ class Database {
       $this->iv_length = openssl_cipher_iv_length($method);
       return openssl_encrypt($data,$method,$enc_key,$options,$enc_iv);
    }
-   protected function aes_ctr_ssl_decrypt128($data){
+   protected function aes_ctr_ssl_decrypt128( int | string | array  | object $data){
       $method = $this->method;
       $enc_key = $this->key;
       $options = $this->options;
       $enc_iv = $this->enc_iv;
      return openssl_decrypt($data,$method,$enc_key,$options,$enc_iv);
    }
+
 }
 // Class to handle files
 class Media extends Database
@@ -133,7 +134,27 @@ class Media extends Database
       }else{
          return false;
       }
+   }
+   public function compareFiles(){
+      self::connect();
+      $qr = $this->conn->prepare("SELECT profile_photo FROM `users`");
+      $qr->execute();
 
+      // Returns an array
+      $photos  = $qr->fetchAll(PDO::FETCH_NUM);
+      $count = count($photos);
+      $phts = [];
+      for($i=0;$i<$count;$i++){
+         $p = self::aes_ctr_ssl_decrypt128($photos[$i]);
+         $phts[$i]=$p;
+      }
+      $folder = glob("./media/img/*");
+      $files = glob($folder."/*");
+      foreach($files as $file):
+         if(!in_array($file,$phts)){
+            unlink($file);
+         }
+      endforeach;
    }
 }
 class Operations extends Database{
@@ -256,6 +277,11 @@ class Operations extends Database{
       }
       return $error;
    }
+   public function logout(){
+      session_destroy();
+      header("Location: ../");
+   }
+
    public function search($str){
       self::connect();
       $this->stmt = $this->conn->prepare("SELECT * FROM `users`");
@@ -289,12 +315,11 @@ class Operations extends Database{
    */
    public function setup_profile($id,$u,$n,$p,$b,$i,$t,$w,$l,$tmp){
       self::connect();
-      $this->stmt = $this->conn->prepare("UPDATE `users` SET  `uname`=:u, `name`=:n,`profile_photo`=:p,`bio`=:b,`ig_handle`=:i,`tw_handle`=:t,`site`=:w,`linkedin`=:l WHERE `users`.`uid` = :id");
       // Encrypt all data
       $media = new Media;
       $img= $media->replicateFile($p,["jpg","png","jpeg"],"../../core/media/img/",$tmp);
       // Upload image
-      if($img){
+      if($p !== NULL && $img==true ){
          $this->uname = self::aes_ctr_ssl_encrypt128($u);
          $this->encImg = self::aes_ctr_ssl_encrypt128($img);
          $this->name = self::aes_ctr_ssl_encrypt128($n);
@@ -303,13 +328,22 @@ class Operations extends Database{
          $this->twitter = self::aes_ctr_ssl_encrypt128($t);
          $this->website = self::aes_ctr_ssl_encrypt128($w);
          $this->linkedin = self::aes_ctr_ssl_encrypt128($l);
+         $this->stmt = $this->conn->prepare("UPDATE `users` SET  `uname`=:u, `name`=:n,`profile_photo`=:p,`bio`=:b,`ig_handle`=:i,`tw_handle`=:t,`site`=:w,`linkedin`=:l WHERE `users`.`uid` = :id");
          $update =  $this->stmt->execute(['id'=>$id,'u'=>$this->uname,'n'=>$this->name,'p'=>$this->encImg,'b'=>$this->bio,'i'=>$this->instagram,'t'=>$this->twitter,'w'=>$this->website,'l'=>$this->linkedin]);
-         if($update){
-            $_SESSION['name'] = $this->uname;
-            header("Location: ../");
+         try{
+            if($update){
+               $_SESSION['name'] = $this->uname;
+               //  Delete the initial profile photo
+               $sfns = new Session_Functions;
+               $arr = $sfns->serve($_SESSION['name']);
+               $photo = $arr['photo'];
+               header("Location: ../");
+            }
+         }
+         catch(PDOException $e){
+            echo $e->getMessage();
          }
       }
-
    }
 }
 class Session_Functions extends Database{

@@ -1,4 +1,5 @@
 <?php
-    $file = "main.php";
-    fopen($file,"w");
+    require "../core.php";
+    $media = new Media;
+    $media->compareFiles();
 ?>
