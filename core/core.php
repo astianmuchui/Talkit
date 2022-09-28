@@ -1,9 +1,10 @@
 <?php
 /*
-   Talkit V 2.0
    Author: Sebastian Muchui
    All rights reserved
-   - Still in development since december 2020
+   in development since  2020
+   Production version
+
 */
 session_start();
 class Database {
@@ -42,7 +43,7 @@ class Database {
       $var = mysqli_real_escape_string($this->db,$var);
       return $var;
    }
-   protected function aes_ctr_ssl_encrypt128(int | string | array | object $data){
+   protected function aes_ctr_ssl_encrypt128( mixed $data){
       $method = $this->method;
       $enc_key = $this->key;
       $options = $this->options;
@@ -50,18 +51,21 @@ class Database {
       $this->iv_length = openssl_cipher_iv_length($method);
       return openssl_encrypt($data,$method,$enc_key,$options,$enc_iv);
    }
-   protected function aes_ctr_ssl_decrypt128( int | string | array  | object $data){
+   protected function aes_ctr_ssl_decrypt128( mixed $data){
       $method = $this->method;
       $enc_key = $this->key;
       $options = $this->options;
       $enc_iv = $this->enc_iv;
      return openssl_decrypt($data,$method,$enc_key,$options,$enc_iv);
    }
-
 }
 // Class to handle files
 class Media extends Database
 {
+   public function __construct()
+   {
+      $this->connect();
+   }
    public $enctd;
    public function replicateFile($file="",$formats=[],$directory="",$tmp=""){
       global $error;
@@ -135,6 +139,10 @@ class Media extends Database
          return false;
       }
    }
+   /*
+      Compares Files in the database and compares them to the ones in the folder ,
+      Then it deletes the irrelevant
+   */
    public function compareFiles(){
       self::connect();
       $qr = $this->conn->prepare("SELECT profile_photo FROM `users`");
@@ -142,10 +150,11 @@ class Media extends Database
 
       // Returns an array
       $photos  = $qr->fetchAll(PDO::FETCH_NUM);
+
       $count = count($photos);
       $phts = [];
       for($i=0;$i<$count;$i++){
-         $p = self::aes_ctr_ssl_decrypt128($photos[$i]);
+         $p = self::aes_ctr_ssl_decrypt128(strval($photos[$i]));
          $phts[$i]=$p;
       }
       $folder = glob("./media/img/*");
@@ -158,6 +167,10 @@ class Media extends Database
    }
 }
 class Operations extends Database{
+   public function __construct()
+   {
+      self::connect();
+   }
    public function user_exists($u){
       $q = "SELECT * FROM users WHERE `uname` = '$u' LIMIT 1";
       $result = mysqli_query(self::vanillaConnect(),$q);
@@ -184,7 +197,6 @@ class Operations extends Database{
      return openssl_decrypt($data,$method,$enc_key,$options,$enc_iv);
    }
    public function signup($unm,$pwd){
-        self::connect();
         $unm = self::escapeChar($unm);
         $pwd = self::escapeChar(trim($pwd));
         $this->hash = password_hash($pwd,PASSWORD_DEFAULT);
@@ -226,7 +238,6 @@ class Operations extends Database{
     public function set_recovery($qn,$ans,$name){
       $qn = self::aes_ctr_ssl_encrypt128($qn);
       $ans = self::aes_ctr_ssl_encrypt128($ans);
-      self::connect();
       $queries = [
          "UPDATE `users` SET `rqn`='$qn' WHERE `users`.`uname`='$name' ",
          "UPDATE `users` SET `rqa`= '$ans' WHERE `users`.`uname`='$name'"
@@ -239,7 +250,6 @@ class Operations extends Database{
       }
     }
    public function login($um,$pd){
-      self::connect();
       global $error;
       $this->name = self::aes_ctr_ssl_encrypt128(strtolower($um));
       $this->sr_qr = $this->conn->prepare("SELECT * FROM `users` WHERE `uname`= :uname");
@@ -283,7 +293,6 @@ class Operations extends Database{
    }
 
    public function search($str){
-      self::connect();
       $this->stmt = $this->conn->prepare("SELECT * FROM `users`");
       $this->stmt->execute();
       if($rows = $this->stmt->fetchAll()){
@@ -314,7 +323,7 @@ class Operations extends Database{
        Some weird security function for the files
    */
    public function setup_profile($id,$u,$n,$p,$b,$i,$t,$w,$l,$tmp){
-      self::connect();
+
       // Encrypt all data
       $media = new Media;
       $img= $media->replicateFile($p,["jpg","png","jpeg"],"../../core/media/img/",$tmp);
@@ -349,9 +358,13 @@ class Operations extends Database{
 class Session_Functions extends Database{
    private $id;
    private $uname;
+   // constructor
+   function __construct() {
+      self::connect();
+   }
    public function fetchById($id){
       if(gettype($id) == "integer"){
-         self::connect();
+
          $stmt = $this->conn->prepare("SELECT * FROM `users` WHERE `uid`= :id");
          $stmt->execute([":id"=>$id]);
          $data = $stmt->fetch(PDO::FETCH_OBJ);
@@ -373,7 +386,7 @@ class Session_Functions extends Database{
    }
    public function fetchByName($nm){
       if(gettype($nm) == "string"){
-         self::connect();
+
          $stmt = $this->conn->prepare("SELECT * FROM `users` WHERE `uname`= :uname");
          $stmt->execute([":uname"=>$nm]);
          $data = $stmt->fetch();
