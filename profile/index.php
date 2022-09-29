@@ -22,7 +22,7 @@
         <div class="buttons grid-3">
             <a href="#" class="btn-primary flex-column"><i class="fas fa-inbox child" title="Messages" aria-hidden="true"></i></a>
             <a href="./setup/" class="btn-primary flex-column" ><i class="fas fa-pencil-alt"title="Edit Profile"  ></i> </a>
-            <a href="#" class="btn-primary flex-column" ><i class="fas fa-sign-out-alt finl" title="logout" aria-hidden="true"></i> </a>
+            <a href="../logout/" class="btn-primary flex-column" ><i class="fas fa-sign-out-alt finl" title="logout" aria-hidden="true"></i> </a>
         </div>
         </nav>
     </header>

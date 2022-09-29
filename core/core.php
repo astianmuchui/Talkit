@@ -34,7 +34,7 @@ class Database {
       try{
          $this->db = mysqli_connect($this->dbhost,$this->dbuser,$this->pwd,$this->dbname);
       }catch(Exception $e){
-         echo $e;
+           echo $e;
       }
       return $this->db;
    }
