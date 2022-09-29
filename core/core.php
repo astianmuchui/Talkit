@@ -59,7 +59,7 @@ class Database {
      return openssl_decrypt($data,$method,$enc_key,$options,$enc_iv);
    }
 }
-// Class to handle files
+// Class to handle media
 class Media extends Database
 {
    public function __construct()
