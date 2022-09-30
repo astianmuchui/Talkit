@@ -1,5 +1,5 @@
 <?php
-    // Security Redirects
-    header("Location: ../index.php");
+    //  Redirects
+    header("Location: ../");
 
 ?>
