@@ -7,43 +7,71 @@
 
 */
 session_start();
-class Database {
-    private $dbname = "talkit_production";
-    private $dbhost = "localhost";
-    private $dbuser = "root";
-    private $pwd = "";
-    protected $method = "AES-128-CTR";
-    protected $options = 0;
-    protected $enc_iv = '1234567891011121';
+class
+ Database
+{
+    private
+   $dbname = "talkit_production";
+   private
+   $dbhost = "localhost";
+   private
+   $dbuser = "root";
+   private
+   $pwd = "";
+   protected
+   $method = "AES-128-CTR";
+   protected
+   $options = 0;
+   protected
+   $enc_iv = '1234567891011121';
    //  Basic placeholders
-    protected $key = '$2y$10$Lvh7toMVlSJjwmMHSZ5ULOWkFITbUuK6mr/NG2YKluolXTpI.lLbu';
-    protected $pepper = '$2y$10$np7bVhRUeR5qQNDlAL.hOOvDaEwZdghmLpz8HjkVJnX0vJbmuyto2';
-    protected $salt = '$2y$10$PYbF/lbCcZ5G4wK39svrRO0k2HM/rj.Iu8NqUxpcI01BmfIZq0J9e';
-    protected function connect(){
+   protected
+   $key = '$2y$10$Lvh7toMVlSJjwmMHSZ5ULOWkFITbUuK6mr/NG2YKluolXTpI.lLbu';
+   protected
+   $pepper = '$2y$10$np7bVhRUeR5qQNDlAL.hOOvDaEwZdghmLpz8HjkVJnX0vJbmuyto2';
+   protected
+   $salt = '$2y$10$PYbF/lbCcZ5G4wK39svrRO0k2HM/rj.Iu8NqUxpcI01BmfIZq0J9e';
+    protected
+     function connect()
+    {
    $this->conn = null;
-   try{
+   try
+   {
       $this->conn = new PDO('mysql:host='.$this->dbhost.';dbname='.$this->dbname,$this->dbuser,$this->pwd);
       $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
       $this->conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE,PDO::FETCH_OBJ);
-   }catch(PDOException $e){
+   }
+   catch
+   (PDOException $e)
+   {
       echo $e->getMessage();
    }
    return $this->conn;
 }
-   protected function vanillaConnect(){
-      try{
+   protected
+   function vanillaConnect()
+   {
+      try
+      {
          $this->db = mysqli_connect($this->dbhost,$this->dbuser,$this->pwd,$this->dbname);
-      }catch(Exception $e){
+      }
+      catch
+      (Exception $e)
+      {
            echo $e;
       }
       return $this->db;
    }
-   protected function escapeChar($var){
+   protected
+   function escapeChar($var)
+   {
       self::vanillaConnect();
       $var = mysqli_real_escape_string($this->db,$var);
       return $var;
    }
-   protected function aes_ctr_ssl_encrypt128( mixed $data){
+   protected
+    function aes_ctr_ssl_encrypt128( mixed $data)
+   {
       $method = $this->method;
       $enc_key = $this->key;
       $options = $this->options;
@@ -51,7 +79,8 @@ class Database {
       $this->iv_length = openssl_cipher_iv_length($method);
       return openssl_encrypt($data,$method,$enc_key,$options,$enc_iv);
    }
-   protected function aes_ctr_ssl_decrypt128( mixed $data){
+   protected function aes_ctr_ssl_decrypt128( mixed $data)
+   {
       $method = $this->method;
       $enc_key = $this->key;
       $options = $this->options;
@@ -60,31 +89,46 @@ class Database {
    }
 }
 // Class to handle media
-class Media extends Database
+class
+ Media extends Database
 {
-   public function __construct()
+   public
+   function __construct()
    {
       $this->connect();
    }
    public $enctd;
-   public function replicateFile($file="",$formats=[],$directory="",$tmp=""){
+   public function replicateFile($file="",$formats=[],$directory="",$tmp="")
+   {
       global $error;
       $error = NULL;
-      if($file==NULL || $formats == NULL || $directory==NULL || $tmp== NULL){
-      }else{
-         if(gettype($formats) == "array"){
+      if
+      ($file==NULL || $formats == NULL || $directory==NULL || $tmp== NULL)
+      {
+      }
+      else
+      {
+         if
+         (gettype($formats) == "array")
+         {
             $filename = basename($file);
             $path = $directory.$filename;
             $content = file_get_contents($tmp);
             $extension = pathinfo($path,PATHINFO_EXTENSION);
-            if(in_array($extension,$formats)){
-               try{
+            if(in_array($extension,$formats))
+            {
+               try
+               {
                   $file = fopen($path,"a");
-                  if($file){
+                  if
+                  ($file)
+                  {
                      fwrite($file,$content);
                      fclose($file);
                      $this->enctd = self::aes_ctr_ssl_encrypt128($filename);
-                  }else{
+                  }
+                  else
+                  {
                      $error = '
                      <center>
                      <div class="error" id="error">
@@ -94,10 +138,14 @@ class Media extends Database
                  </center>
                      ';
                   }
-               }catch(Exception $e){
+               }catch
+               (Exception $e)
+               {
                   echo $e;
                }
-            }else{
+            }
+            else
+            {
                $error = '
                <center>
                <div class="error" id="error">
@@ -107,7 +155,9 @@ class Media extends Database
            </center>
                ';
             }
-         }else{
+         }
+         else
+         {
             $error = "Formats must be an array";
          }
       }
@@ -121,21 +171,35 @@ class Media extends Database
       formats[arr] -> An array of file extensions that you want
       directory-> The destination of the file
    */
-   public function UploadFile($file="",$folder="",$tmp="",$formats=[]){
+   public
+   function UploadFile($file="",$folder="",$tmp="",$formats=[])
+   {
       $filename = basename($file);
       $path = $folder.$filename;
       $extension = pathinfo($path,PATHINFO_EXTENSION);
-      if(gettype($formats) == "array"){
-         if(in_array($extension,$formats)){
-            if(move_uploaded_file($tmp,$path)){
+      if
+      (gettype($formats) == "array")
+      {
+         if
+         (in_array($extension,$formats))
+         {
+            if
+            (move_uploaded_file($tmp,$path))
+            {
                return true;
-            }else{
+            }
+            else
+            {
                return false;
             }
-         }else{
+         }
+         else
+         {
             return false;
          }
-      }else{
+      }
+      else
+      {
          return false;
       }
    }
@@ -143,7 +207,9 @@ class Media extends Database
       Compares Files in the database and compares them to the ones in the folder ,
       Then it deletes the irrelevant
    */
-   public function compareFiles(){
+   public
+   function compareFiles()
+   {
       self::connect();
       $qr = $this->conn->prepare("SELECT profile_photo FROM `users`");
       $qr->execute();
@@ -153,35 +219,47 @@ class Media extends Database
 
       $count = count($photos);
       $phts = [];
-      for($i=0;$i<$count;$i++){
+      for
+      ($i=0;$i<$count;$i++){
          $p = self::aes_ctr_ssl_decrypt128(strval($photos[$i]));
          $phts[$i]=$p;
       }
       $folder = glob("./media/img/*");
       $files = glob($folder."/*");
-      foreach($files as $file):
-         if(!in_array($file,$phts)){
+      foreach
+      ($files as $file):
+         if
+         (!in_array($file,$phts))
+         {
             unlink($file);
          }
       endforeach;
    }
 }
-class Operations extends Database{
-   public function __construct()
+class
+Operations extends Database
+{
+   public
+   function __construct()
    {
       self::connect();
    }
-   public function user_exists($u){
+   public
+    function user_exists($u)
+   {
       $q = "SELECT * FROM users WHERE `uname` = '$u' LIMIT 1";
       $result = mysqli_query(self::vanillaConnect(),$q);
-      if(mysqli_fetch_assoc($result)){
+      if(mysqli_fetch_assoc($result))
+      {
          return true;
       }else{
          return false;
       }
       mysqli_close(self::vanillaConnect());
      }
-   protected function aes_ctr_ssl_encrypt128($data){
+   protected
+   function aes_ctr_ssl_encrypt128($data)
+   {
       $method = $this->method;
       $enc_key = $this->key;
       $options = $this->options;
@@ -189,21 +267,26 @@ class Operations extends Database{
       $this->iv_length = openssl_cipher_iv_length($method);
       return openssl_encrypt($data,$method,$enc_key,$options,$enc_iv);
    }
-   protected function aes_ctr_ssl_decrypt128($data){
+   protected
+   function aes_ctr_ssl_decrypt128($data)
+   {
       $method = $this->method;
       $enc_key = $this->key;
       $options = $this->options;
       $enc_iv = $this->enc_iv;
      return openssl_decrypt($data,$method,$enc_key,$options,$enc_iv);
    }
-   public function signup($unm,$pwd){
+   public
+   function signup($unm,$pwd)
+   {
         $unm = self::escapeChar($unm);
         $pwd = self::escapeChar(trim($pwd));
         $this->hash = password_hash($pwd,PASSWORD_DEFAULT);
         $this->hash = $this->pepper.$this->hash.$this->salt;
          $unm = trim(strtolower(trim($unm)));
-         if(strpos($unm," ")){
-
+         if
+         (strpos($unm," "))
+         {
             $error = '
             <center>
             <div class="error" id="error">
@@ -213,15 +296,21 @@ class Operations extends Database{
         </center>
             ';
             print($error);
-         }else{
+         }
+         else
+         {
             $this->encrypted_raw_name = self::aes_ctr_ssl_encrypt128($unm);
         // check if user exists
-         if(self::user_exists($this->encrypted_raw_name) == false){
+         if
+         (self::user_exists($this->encrypted_raw_name) == false)
+         {
             $this->ins = $this->conn->prepare("INSERT INTO users (`uname`,`pwd`) VALUES(:unm,:pwd)");
             $this->ins->execute(['unm'=>$this->encrypted_raw_name,'pwd'=>$this->hash]);
             $_SESSION['name'] = $this->encrypted_raw_name;
             header("Location: ./profile/recovery/");
-         }else{
+         }
+         else
+         {
             $error = '
             <center>
             <div class="error" id="error">
@@ -232,40 +321,56 @@ class Operations extends Database{
             ';
             print($error);
          }
-         }
-
+      }
     }
-    public function set_recovery($qn,$ans,$name){
+    public
+    function set_recovery($qn,$ans,$name)
+    {
       $qn = self::aes_ctr_ssl_encrypt128($qn);
       $ans = self::aes_ctr_ssl_encrypt128($ans);
       $queries = [
          "UPDATE `users` SET `rqn`='$qn' WHERE `users`.`uname`='$name' ",
          "UPDATE `users` SET `rqa`= '$ans' WHERE `users`.`uname`='$name'"
    ];
-      foreach($queries as $q){
+      foreach
+      ($queries as $q)
+      {
          $inserted = $this->conn->query($q);
       }
-      if($inserted){
+      if
+      ($inserted)
+      {
          header("Location: ../");
       }
     }
-   public function login($um,$pd){
+   public
+   function login($um,$pd)
+   {
       global $error;
       $this->name = self::aes_ctr_ssl_encrypt128(strtolower($um));
       $this->sr_qr = $this->conn->prepare("SELECT * FROM `users` WHERE `uname`= :uname");
       $this->sr_qr->execute(['uname'=>$this->name]);
-      if($row = $this->sr_qr->fetch()){
+      if($row = $this->sr_qr->fetch())
+      {
          //check password
          $crpwd = $row->pwd;
          $crpwd = str_replace($this->pepper,"",$crpwd);
          $crpwd = str_replace($this->salt,"",$crpwd);
          // Verify
-         if(password_verify($pd,$crpwd)){
+         if
+         (
+            password_verify(
+               $pd, $crpwd
+            )
+            )
+         {
             // All okay
             $_SESSION['user'] = $row->id;
             $_SESSION['name'] = $this->name;
             header("Location: ../profile");
-         }else{
+         }
+         else
+         {
             $error = '
             <center>
             <div class="error" id="error">
@@ -275,7 +380,9 @@ class Operations extends Database{
         </center>
             ';
          }
-      }else{
+      }
+      else
+      {
          $error = '
          <center>
          <div class="error" id="error">
@@ -287,19 +394,33 @@ class Operations extends Database{
       }
       return $error;
    }
-   public function logout(){
+   public
+   function logout()
+   {
       session_destroy();
-      header("Location: ../");
+      header(
+         "Location: ../"
+   );
    }
 
-   public function search($str){
+   public
+   function search($str)
+   {
       $this->stmt = $this->conn->prepare("SELECT * FROM `users`");
       $this->stmt->execute();
-      if($rows = $this->stmt->fetchAll()){
-            foreach($rows as $row){
+      if
+      (
+         $rows = $this->stmt->fetchAll()
+         )
+      {
+            foreach
+            ($rows as $row)
+            {
                  $unm = $row->uname;
                  $readable = self::aes_ctr_ssl_decrypt128($unm);
-                 if(stristr($readable,$str)){
+                 if
+                 (stristr($readable,$str))
+                 {
                      $div = '
                      <div class="chat">
                      <img src="../UI/img/avatar.png" alt="" height="30px" width="30px">
@@ -322,14 +443,14 @@ class Operations extends Database{
        Compression
        Some weird security function for the files
    */
-   public function setup_profile($id,$u,$n,$p,$b,$i,$t,$w,$l,$tmp){
-
+   public
+   function setup_profile($id,$u,$n,$p,$b,$i,$t,$w,$l,$tmp)
+   {
       // Encrypt all data
       $media = new Media;
       $img= $media->replicateFile($p,["jpg","png","jpeg"],"../../core/media/img/",$tmp);
       // Upload image
-      if($p !== NULL && $img==true ){
-         $this->uname = self::aes_ctr_ssl_encrypt128($u);
+      $this->uname = self::aes_ctr_ssl_encrypt128($u);
          $this->encImg = self::aes_ctr_ssl_encrypt128($img);
          $this->name = self::aes_ctr_ssl_encrypt128($n);
          $this->bio = self::aes_ctr_ssl_encrypt128($b);
@@ -338,37 +459,98 @@ class Operations extends Database{
          $this->website = self::aes_ctr_ssl_encrypt128($w);
          $this->linkedin = self::aes_ctr_ssl_encrypt128($l);
          $this->stmt = $this->conn->prepare("UPDATE `users` SET  `uname`=:u, `name`=:n,`profile_photo`=:p,`bio`=:b,`ig_handle`=:i,`tw_handle`=:t,`site`=:w,`linkedin`=:l WHERE `users`.`uid` = :id");
-         $update =  $this->stmt->execute(['id'=>$id,'u'=>$this->uname,'n'=>$this->name,'p'=>$this->encImg,'b'=>$this->bio,'i'=>$this->instagram,'t'=>$this->twitter,'w'=>$this->website,'l'=>$this->linkedin]);
-         try{
-            if($update){
+
+      if
+      ($img==true)
+      {
+
+         try
+         {
+            $update =  $this->stmt->execute(['id'=>$id,'u'=>$this->uname,'n'=>$this->name,'p'=>$this->encImg,'b'=>$this->bio,'i'=>$this->instagram,'t'=>$this->twitter,'w'=>$this->website,'l'=>$this->linkedin]);
+            if
+            ($update)
+            {
                $_SESSION['name'] = $this->uname;
                //  Delete the initial profile photo
                $sfns = new Session_Functions;
                $arr = $sfns->serve($_SESSION['name']);
                $photo = $arr['photo'];
-               header("Location: ../");
+               header(
+                  "Location: ../"
+               );
             }
          }
-         catch(PDOException $e){
-            echo $e->getMessage();
+         catch
+         (PDOException $e)
+         {
+            echo
+            $e->getMessage();
+         }
+      }
+
+   }
+   public function serveData($nm){
+      if
+      ($nm !== null)
+      {
+         $stmt = $this->conn->prepare("SELECT * FROM `users` WHERE `uname`= :uname");
+         $stmt->execute([":uname"=>$nm]);
+         $data = $stmt->fetch();
+         while
+         ($data)
+         {
+            $name = self::aes_ctr_ssl_decrypt128($data->uname);
+            $nm = self::aes_ctr_ssl_decrypt128($data->name);
+            $rqn = self::aes_ctr_ssl_decrypt128($data->rqn);
+            $rqa = self::aes_ctr_ssl_decrypt128($data->rqa);
+            $photo = self::aes_ctr_ssl_decrypt128(self::aes_ctr_ssl_decrypt128($data->profile_photo));
+             $bio  = self::aes_ctr_ssl_decrypt128($data->bio);
+             $ig =  self::aes_ctr_ssl_decrypt128($data->ig_handle);
+             $twitter = self::aes_ctr_ssl_decrypt128($data->tw_handle);
+             $site = self::aes_ctr_ssl_decrypt128($data->site);
+             $linkedin = self::aes_ctr_ssl_decrypt128($data->linkedin);
+            $unam = strtolower((trim($name)));
+            if
+            (strpos($unam," "))
+            {
+               $unam = str_replace(" ","",$unam);
+            }
+            $arr = ["id"=>$data->uid,"uname"=>$name,"name"=>$nm,"rqn"=>$rqn,"rqa"=>$rqa,"photo"=>$photo,"bio"=>$bio,"ig"=>$ig,"twitter"=>$twitter,"site"=>$site,"linkedin"=>$linkedin];
+            return $arr;
          }
       }
    }
+   public
+   function profile($nm,$u,$n,$p,$b,$i,$t,$w,$l,$tmp){
+      // $arr = self::serveData($nm);
+      if($p == NULL){
+
+      }
+
+   }
 }
-class Session_Functions extends Database{
+class Session_Functions extends Database
+{
    private $id;
    private $uname;
    // constructor
-   function __construct() {
+   public
+   function __construct()
+   {
       self::connect();
    }
-   public function fetchById($id){
-      if(gettype($id) == "integer"){
-
+   public
+   function fetchById($id)
+   {
+      if
+      (gettype($id) == "integer")
+      {
          $stmt = $this->conn->prepare("SELECT * FROM `users` WHERE `uid`= :id");
          $stmt->execute([":id"=>$id]);
          $data = $stmt->fetch(PDO::FETCH_OBJ);
-         while($data){
+         while
+         ($data)
+         {
             $name = self::aes_ctr_ssl_decrypt128($data->uname);
             $nm = self::aes_ctr_ssl_decrypt128($data->name);
             $rqn = self::aes_ctr_ssl_decrypt128($data->rqn);
@@ -384,13 +566,18 @@ class Session_Functions extends Database{
          }
       }
    }
-   public function fetchByName($nm){
-      if(gettype($nm) == "string"){
-
+   public
+   function fetchByName($nm)
+   {
+      if
+      (gettype($nm) == "string")
+      {
          $stmt = $this->conn->prepare("SELECT * FROM `users` WHERE `uname`= :uname");
          $stmt->execute([":uname"=>$nm]);
          $data = $stmt->fetch();
-         while($data){
+         while
+         ($data)
+         {
             $name = self::aes_ctr_ssl_decrypt128($data->uname);
             $nm = self::aes_ctr_ssl_decrypt128($data->name);
             $rqn = self::aes_ctr_ssl_decrypt128($data->rqn);
@@ -402,7 +589,9 @@ class Session_Functions extends Database{
              $site = self::aes_ctr_ssl_decrypt128($data->site);
              $linkedin = self::aes_ctr_ssl_decrypt128($data->linkedin);
             $unam = strtolower((trim($name)));
-            if(strpos($unam," ")){
+            if
+            (strpos($unam," "))
+            {
                $unam = str_replace(" ","",$unam);
             }
             $arr = ["id"=>$data->uid,"uname"=>$name,"name"=>$nm,"rqn"=>$rqn,"rqa"=>$rqa,"photo"=>$photo,"bio"=>$bio,"ig"=>$ig,"twitter"=>$twitter,"site"=>$site,"linkedin"=>$linkedin];
@@ -411,12 +600,20 @@ class Session_Functions extends Database{
       }
    }
    // Function to serve user data more feasibly on pages
-   public function serve($variable){
+   public
+   function serve($variable)
+   {
       // The function should take either a string or an int
-      switch(gettype($variable)){
-         case "string":
+      switch
+      (
+         gettype($variable)
+      )
+      {
+         case
+          "string":
            return self::fetchByName($variable);
-         case "integer":
+         case
+          "integer":
            return self::fetchById($variable);
       }
    }

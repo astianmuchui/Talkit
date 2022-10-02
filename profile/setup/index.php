@@ -15,9 +15,9 @@
         $wb = $_POST['site'];
         $ln = $_POST['linkedin'];
         $arry = [$arr['id'],$name,$image,$bio,$ig,$tw,$wb,$ln];
-        // var_dump($arry);
+
         $ops->setup_profile($arr['id'],$unm,$name,$image,$bio,$ig,$tw,$wb,$ln,$tmp);
-       
+
 
     }
 ?>
