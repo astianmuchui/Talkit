@@ -178,7 +178,8 @@ class
       directory-> The destination of the file
    */
    public
-   function UploadFile($file="",$folder="",$tmp="",$formats=[])
+   function
+   UploadFile($file="",$folder="",$tmp="",$formats=[])
    {
       $filename = basename($file);
       $path = $folder.$filename;
@@ -214,7 +215,8 @@ class
       Then it deletes the irrelevant
    */
    public
-   function compareFiles()
+   function
+   compareFiles()
    {
       self::connect();
       $qr = $this->conn->prepare("SELECT profile_photo FROM `users`");
@@ -264,7 +266,8 @@ Operations extends Database
       mysqli_close(self::vanillaConnect());
      }
    protected
-   function aes_ctr_ssl_encrypt128($data)
+   function
+   aes_ctr_ssl_encrypt128($data)
    {
       $method = $this->method;
       $enc_key = $this->key;
@@ -274,7 +277,8 @@ Operations extends Database
       return openssl_encrypt($data,$method,$enc_key,$options,$enc_iv);
    }
    protected
-   function aes_ctr_ssl_decrypt128($data)
+   function
+   aes_ctr_ssl_decrypt128($data)
    {
       $method = $this->method;
       $enc_key = $this->key;
@@ -283,7 +287,8 @@ Operations extends Database
      return openssl_decrypt($data,$method,$enc_key,$options,$enc_iv);
    }
    public
-   function signup($unm,$pwd)
+   function
+   signup($unm,$pwd)
    {
         $unm = self::escapeChar($unm);
         $pwd = self::escapeChar(trim($pwd));
@@ -356,7 +361,8 @@ Operations extends Database
       $this->name = self::aes_ctr_ssl_encrypt128(strtolower($um));
       $this->sr_qr = $this->conn->prepare("SELECT * FROM `users` WHERE `uname`= :uname");
       $this->sr_qr->execute(['uname'=>$this->name]);
-      if($row = $this->sr_qr->fetch())
+      if
+      (  $row = $this->sr_qr->fetch())
       {
          //check password
          $crpwd = $row->pwd;
