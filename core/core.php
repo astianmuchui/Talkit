@@ -63,14 +63,16 @@ class
       return $this->db;
    }
    protected
-   function escapeChar($var)
+   function
+   escapeChar($var)
    {
       self::vanillaConnect();
       $var = mysqli_real_escape_string($this->db,$var);
       return $var;
    }
    protected
-    function aes_ctr_ssl_encrypt128( mixed $data)
+    function
+    aes_ctr_ssl_encrypt128( mixed $data)
    {
       $method = $this->method;
       $enc_key = $this->key;
@@ -79,7 +81,9 @@ class
       $this->iv_length = openssl_cipher_iv_length($method);
       return openssl_encrypt($data,$method,$enc_key,$options,$enc_iv);
    }
-   protected function aes_ctr_ssl_decrypt128( mixed $data)
+   protected
+    function
+    aes_ctr_ssl_decrypt128( mixed $data)
    {
       $method = $this->method;
       $enc_key = $this->key;
@@ -98,7 +102,9 @@ class
       $this->connect();
    }
    public $enctd;
-   public function replicateFile($file="",$formats=[],$directory="",$tmp="")
+   public
+   function
+   replicateFile($file="",$formats=[],$directory="",$tmp="")
    {
       global $error;
       $error = NULL;
@@ -444,7 +450,8 @@ Operations extends Database
        Some weird security function for the files
    */
    public
-   function setup_profile($id,$u,$n,$p,$b,$i,$t,$w,$l,$tmp)
+   function
+   setup_profile($id,$u,$n,$p,$b,$i,$t,$w,$l,$tmp)
    {
       // Encrypt all data
       $media = new Media;
@@ -489,7 +496,8 @@ Operations extends Database
       }
 
    }
-   public function serveData($nm){
+   public
+   function serveData($nm){
       if
       ($nm !== null)
       {
@@ -567,7 +575,8 @@ class Session_Functions extends Database
       }
    }
    public
-   function fetchByName($nm)
+   function
+   fetchByName($nm)
    {
       if
       (gettype($nm) == "string")
