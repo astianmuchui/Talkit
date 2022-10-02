@@ -601,7 +601,8 @@ class Session_Functions extends Database
    }
    // Function to serve user data more feasibly on pages
    public
-   function serve($variable)
+   function
+    serve($variable)
    {
       // The function should take either a string or an int
       switch
