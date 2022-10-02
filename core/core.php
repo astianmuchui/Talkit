@@ -7,12 +7,13 @@
 
 */
 
-use FFI\Exception;
-
 session_start();
 
-//  Procedural SQL in case i need it for whatever weird reason
-class sequel {
+use FFI\Exception;
+
+//  Procedural SQL in case i need it for whatever Weird reason
+// To be removed incase irrelevant
+class Sequel {
    protected $username = 'root';
    protected $host = "localhost";
    protected $pwd = "";
@@ -42,8 +43,8 @@ class sequel {
       self::close_connection();
    }
    protected function fetchArray($table,$column){
-      $this->query = "SELECT $column FROM `$this->table` ORDER BY id DESC";
-      return $this->data = mysqli_fetch_all(self::query($this->dbname,$this->query),MYSQLI_ASSOC);
+      $this->query = "SELECT `$column` FROM `$this->table` ";
+      return $this->data = mysqli_fetch_all(self::query($this->dbname,$this->query),MYSQLI_NUM);
       return mysqli_free_result(self::query($this->dbname,$this->query));
       self::close_connection();
    }
@@ -73,7 +74,7 @@ class sequel {
       mysqli_free_result(self::query($this->dbname,"SELECT * FROM $this->table WHERE id = $this->id"));
       self::close_connection();
    }
-}
+}  // END OF PROCEDURAL CLASS
 
 // PDO SQL :
 
