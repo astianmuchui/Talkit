@@ -154,16 +154,21 @@ body{
                     }
 
                     small{
+                        font-size: 11px;
                         text-align: center;
-                        font-weight: 400;
+                        font-weight: 600;
                         margin-bottom: 7.5px;
                     }
                     .icons{
+
                         width: 200px;
                         height: 200px;
                         text-align: center;
                         margin-left: 20%;
-                        margin-top: 2%;
+                        position: sticky;
+                        top: 28%;
+
+
 
                         a {
                             i{
@@ -225,7 +230,7 @@ body{
                             }
                             small{
                                 text-align: start;
-                                font-weight: 300;
+                                font-weight: 600;
                                 font-size: 10px;
                                 position: relative;
                                 left: 10px;

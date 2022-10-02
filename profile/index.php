@@ -1,8 +1,16 @@
 <?php
     require "../core/core.php";
     $server = new Session_Functions;
+    if
+    ($server->LoggedIn()){
     $arr = $server->serve($_SESSION['name']);
     $img = $arr["photo"];
+    }
+    else
+    {
+        $server->redirect("../");
+    }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">

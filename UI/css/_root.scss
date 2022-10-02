@@ -87,8 +87,8 @@ body{
     padding: 0;
 }
 .error{
-    width: 350px;
-    height: 45px;
+    width: 450px;
+    height: 48px;
     background-color: white;
     border-right: 3px solid rgb(155, 28, 28);
     display: grid;
@@ -109,7 +109,7 @@ body{
     height: 25px;
     top: 5px;
     left: 5px ;
-    font-size: 20px;
+    font-size: 18px;
     color: rgb(0, 0, 0);
     border: 2px solid firebrick;
     cursor: pointer;
@@ -117,9 +117,10 @@ body{
 }
 .error .err{
     position: relative;
-    left: -80px;
+    left: -120px;
     top: -5px;
     color: rgb(126, 15, 15);
+    font-size:14px;
 }
 @keyframes fade{
     0%{

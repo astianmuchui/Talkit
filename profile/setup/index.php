@@ -1,25 +1,67 @@
 <?php
-    include "../../core/core.php";
     $error = "";
+    include "../../core/core.php";
     $sfns = new Session_Functions;
-    $arr = $sfns->serve($_SESSION['name']);
-    if(isset($_POST['submit'])){
-        $ops = new Operations;
-        $name = $_POST['nm'];
-        $unm =  $_POST['um'];
-        $tmp = $_FILES['profile_image']['tmp_name'];
-        $image = $_FILES['profile_image']['name'];
-        $bio = $_POST['bio'];
-        $ig = $_POST['ig'];
-        $tw =  $_POST['twitter'];
-        $wb = $_POST['site'];
-        $ln = $_POST['linkedin'];
-        $arry = [$arr['id'],$name,$image,$bio,$ig,$tw,$wb,$ln];
 
-        $ops->setup_profile($arr['id'],$unm,$name,$image,$bio,$ig,$tw,$wb,$ln,$tmp);
+    if
+    ($sfns->LoggedIn()){
+        $arr = $sfns->serve($_SESSION['name']);
+        if
+        (isset($_POST['submit']))
+        {
+            $ops = new Operations;
+            $name = $_POST['nm'];
+            $unm =  $_POST['um'];
+            $tmp = $_FILES['profile_image']['tmp_name'];
+            $image = $_FILES['profile_image']['name'];
 
+            $bio = $_POST['bio'];
+            $ig = $_POST['ig'];
+            $tw =  $_POST['twitter'];
+            $wb = $_POST['site'];
+            $ln = $_POST['linkedin'];
+            $arry = [$arr['id'],$name,$image,$bio,$ig,$tw,$wb,$ln];
 
+            if
+            (strlen($bio)>140){
+                $error = '
+                <center>
+                <div class="error" id="error">
+                    <span class="flex-column" id="close">&times;</span>
+                    <p class="err">Bio exceeds 150 characters</p>
+                </div>
+            </center>
+                ';
+            }
+            if
+            (strlen($unm)>12){
+                $error = '
+            <center>
+            <div class="error" id="error">
+                <span class="flex-column" id="close">&times;</span>
+                <p class="err">Username must be lower than 12 characters</p>
+            </div>
+        </center>
+            ';
+            }
+            if
+            (strlen($name)>26){
+                $error = '
+                <center>
+                <div class="error" id="error">
+                    <span class="flex-column" id="close">&times;</span>
+                    <p class="err">Name must be lower than 26 characters</p>
+                </div>
+            </center>
+                ';
+            }
+            if(strlen($unm)<=12 && strlen($name)<=26 && strlen($bio)<=160){
+                $ops->setup_profile($arr['id'],$unm,$name,$image,$bio,$ig,$tw,$wb,$ln,$tmp);
+            }
     }
+}else{
+    $sfns->redirect("../../");
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">

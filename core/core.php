@@ -6,6 +6,9 @@
    Production version
 
 */
+
+use FFI\Exception;
+
 session_start();
 class
  Database
@@ -193,7 +196,9 @@ class
             if
             (move_uploaded_file($tmp,$path))
             {
+
                return true;
+
             }
             else
             {
@@ -318,6 +323,7 @@ Operations extends Database
             $this->ins = $this->conn->prepare("INSERT INTO users (`uname`,`pwd`) VALUES(:unm,:pwd)");
             $this->ins->execute(['unm'=>$this->encrypted_raw_name,'pwd'=>$this->hash]);
             $_SESSION['name'] = $this->encrypted_raw_name;
+            $_SESSION['logged_in'] = true;
             header("Location: ./profile/recovery/");
          }
          else
@@ -379,6 +385,7 @@ Operations extends Database
             // All okay
             $_SESSION['user'] = $row->id;
             $_SESSION['name'] = $this->name;
+            $_SESSION['logged_in'] = true;
             header("Location: ../profile");
          }
          else
@@ -463,7 +470,7 @@ Operations extends Database
       $media = new Media;
       $img= $media->replicateFile($p,["jpg","png","jpeg"],"../../core/media/img/",$tmp);
       // Upload image
-      $this->uname = self::aes_ctr_ssl_encrypt128($u);
+         $this->uname = self::aes_ctr_ssl_encrypt128($u);
          $this->encImg = self::aes_ctr_ssl_encrypt128($img);
          $this->name = self::aes_ctr_ssl_encrypt128($n);
          $this->bio = self::aes_ctr_ssl_encrypt128($b);
@@ -471,14 +478,14 @@ Operations extends Database
          $this->twitter = self::aes_ctr_ssl_encrypt128($t);
          $this->website = self::aes_ctr_ssl_encrypt128($w);
          $this->linkedin = self::aes_ctr_ssl_encrypt128($l);
-         $this->stmt = $this->conn->prepare("UPDATE `users` SET  `uname`=:u, `name`=:n,`profile_photo`=:p,`bio`=:b,`ig_handle`=:i,`tw_handle`=:t,`site`=:w,`linkedin`=:l WHERE `users`.`uid` = :id");
 
       if
       ($img==true)
       {
-
+         $this->stmt = $this->conn->prepare("UPDATE `users` SET  `uname`=:u, `name`=:n,`profile_photo`=:p,`bio`=:b,`ig_handle`=:i,`tw_handle`=:t,`site`=:w,`linkedin`=:l WHERE `users`.`uid` = :id");
          try
          {
+
             $update =  $this->stmt->execute(['id'=>$id,'u'=>$this->uname,'n'=>$this->name,'p'=>$this->encImg,'b'=>$this->bio,'i'=>$this->instagram,'t'=>$this->twitter,'w'=>$this->website,'l'=>$this->linkedin]);
             if
             ($update)
@@ -494,64 +501,56 @@ Operations extends Database
             }
          }
          catch
-         (PDOException $e)
+         (
+            Exception
+             $e
+         )
          {
             echo
             $e->getMessage();
          }
       }
-
-   }
-   public
-   function serveData($nm){
-      if
-      ($nm !== null)
+      else
       {
-         $stmt = $this->conn->prepare("SELECT * FROM `users` WHERE `uname`= :uname");
-         $stmt->execute([":uname"=>$nm]);
-         $data = $stmt->fetch();
-         while
-         ($data)
+         $this->stmt = $this->conn->prepare("UPDATE `users` SET  `uname`=:u, `name`=:n,`bio`=:b,`ig_handle`=:i,`tw_handle`=:t,`site`=:w,`linkedin`=:l WHERE `users`.`uid` = :id");
+         $update =  $this->stmt->execute(['id'=>$id,'u'=>$this->uname,'n'=>$this->name,'b'=>$this->bio,'i'=>$this->instagram,'t'=>$this->twitter,'w'=>$this->website,'l'=>$this->linkedin]);
+         if
+         ($update)
          {
-            $name = self::aes_ctr_ssl_decrypt128($data->uname);
-            $nm = self::aes_ctr_ssl_decrypt128($data->name);
-            $rqn = self::aes_ctr_ssl_decrypt128($data->rqn);
-            $rqa = self::aes_ctr_ssl_decrypt128($data->rqa);
-            $photo = self::aes_ctr_ssl_decrypt128(self::aes_ctr_ssl_decrypt128($data->profile_photo));
-             $bio  = self::aes_ctr_ssl_decrypt128($data->bio);
-             $ig =  self::aes_ctr_ssl_decrypt128($data->ig_handle);
-             $twitter = self::aes_ctr_ssl_decrypt128($data->tw_handle);
-             $site = self::aes_ctr_ssl_decrypt128($data->site);
-             $linkedin = self::aes_ctr_ssl_decrypt128($data->linkedin);
-            $unam = strtolower((trim($name)));
-            if
-            (strpos($unam," "))
-            {
-               $unam = str_replace(" ","",$unam);
-            }
-            $arr = ["id"=>$data->uid,"uname"=>$name,"name"=>$nm,"rqn"=>$rqn,"rqa"=>$rqa,"photo"=>$photo,"bio"=>$bio,"ig"=>$ig,"twitter"=>$twitter,"site"=>$site,"linkedin"=>$linkedin];
-            return $arr;
+            $_SESSION['name'] = $this->uname;
+            header(
+               "Location: ../"
+            );
+
          }
       }
-   }
-   public
-   function profile($nm,$u,$n,$p,$b,$i,$t,$w,$l,$tmp){
-      // $arr = self::serveData($nm);
-      if($p == NULL){
-
-      }
-
    }
 }
 class Session_Functions extends Database
 {
-   private $id;
-   private $uname;
    // constructor
    public
    function __construct()
    {
       self::connect();
+   }
+   public
+   function
+   redirect(mixed $u){
+      header(
+         "Location: $u"
+      );
+   }
+   public
+   function
+   LoggedIn(){
+      if( $_SESSION['logged_in'] ==true){
+         return true;
+      }
+      else
+      {
+         return false;
+      }
    }
    public
    function fetchById($id)

@@ -2,6 +2,9 @@
     require_once "../../core/core.php";
     $name = $_SESSION['name'];
     $sfns = new Session_Functions;
+    if
+    ($sfns->LoggedIn())
+    {
     // Don't take the term wrongly
     $user_data = $sfns->serve($name);
 
@@ -11,6 +14,10 @@
         $op = new Operations;
         $op->set_recovery($qtn,$qa,$name);
     }
+    }else{
+        $sfns->redirect("../../");
+    }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
