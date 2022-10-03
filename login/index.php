@@ -38,6 +38,7 @@ $error = "";
             <input type="password" name="pd" id=""> <br>
             <input type="submit" value="Login" name="rejoin" class="btn-primary">
         </form>
+        <!-- <p><a href="#" class="text-primary">Forgot Password?</a></p> -->
 </main>
 <script src="../UI/js/err_triggers.js"></script>
 </body>

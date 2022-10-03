@@ -1,15 +1,40 @@
+
+<body style="color: chartreuse; font-family: arial; background-color: black;">
+<!-- Styling was not necessary -->
+<center>
 <?php
-    // WHERE FUNCTIONS ARE TURNED TO FEATURES:
-    require "../core.php";
 
-    class test extends Sequel{
+//How to use
+# Include the Classes file
+include "../easy-sequel/src/main.php";
+// Create a class extending the sql_server class
 
-        public function fetchData()
-        {
-            $arr = self::fetchArray("uname","users");
-            echo $arr;
-        }
-    }
-    $test = new test;
-    $test->fetchData();
+class fetch extends sql_server{
+   // define the table and the database name
+   protected $dbname = "test";
+   protected $table = "posts";
+
+   public function test(){
+      $this->fetch_all_assoc($this->dbname,$this->table);
+      //The associative array returned has a variable name of data
+      //Test if an arr was returneda
+      var_dump($this->data);
+
+
+      //Loop through the array
+
+      // foreach($this->data as $item):
+      //    print($item['index']);
+      // endforeach;
+
+
+   }
+}
+// Initialize the object
+$db_acess = new fetch;
+
+//Run the functions
+$db_acess->test();
 ?>
+</center>
+</body>
