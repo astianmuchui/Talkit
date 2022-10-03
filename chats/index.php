@@ -21,6 +21,7 @@
             </ul>
         </nav>
 
+        
     </header>
     <main class="search-area flex-column">
     <script>
