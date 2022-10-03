@@ -1,3 +1,5 @@
+<?php
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,19 +8,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../UI/css/min.css">
     <title>Start chat</title>
-    
+
 </head>
 <body>
     <header>
         <div class="title">
             <img src="../UI//img/logo.png" alt="" height="70px" width="70px" >
         </div>
-     
+
         <nav>
             <ul>
             </ul>
         </nav>
- 
+
     </header>
     <main class="search-area flex-column">
     <script>
@@ -43,10 +45,10 @@
         </form>
         <div class="chats-container">
            <div class="chats" id="chats">
-            
-            </div> 
+
+            </div>
         </div>
     </main>
-    
-</body> 
+
+</body>
 </html>
