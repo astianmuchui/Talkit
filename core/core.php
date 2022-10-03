@@ -122,7 +122,7 @@ class
    public
    function __construct()
    {
-      $this->connect();
+      Database::connect();
    }
    public $enctd;
    public
@@ -240,23 +240,8 @@ class
       Then it deletes the irrelevant
    */
    public function cleanFiles(){
-         $con = Database::vanillaConnect();
-         $imgs = mysqli_fetch_all(mysqli_query($con,"SELECT `profile_photo` from `users`"),MYSQLI_NUM);
-
-         mysqli_close($con);
-         $photos = [];
-         for
-         (
-            $i=0;
-            $i<count($imgs);
-            $i++
-         )
-         {
-
-            $photos[$i] = self::aes_ctr_ssl_decrypt128(($imgs[$i]));
-         }
-         var_dump($photos);
-   }
+   //
+}
 }
 class
 Operations extends Database
@@ -264,7 +249,7 @@ Operations extends Database
    public
    function __construct()
    {
-      self::connect();
+      Database::connect();
    }
    public
     function user_exists($u)
@@ -541,7 +526,7 @@ class Session_Functions extends Database
    public
    function __construct()
    {
-      self::connect();
+      Database::connect();
    }
    public
    function
