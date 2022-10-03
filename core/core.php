@@ -77,24 +77,42 @@ class
    }
    protected
     function
-    aes_ctr_ssl_encrypt128( mixed $data)
+    aes_ctr_ssl_encrypt128( string | array | int $data)
    {
       $method = $this->method;
       $enc_key = $this->key;
       $options = $this->options;
       $enc_iv = $this->enc_iv;
       $this->iv_length = openssl_cipher_iv_length($method);
-      return openssl_encrypt($data,$method,$enc_key,$options,$enc_iv);
+      switch
+      (gettype($data))
+      {
+         case "Array":
+            return openssl_encrypt($data,$method,$enc_key,$options,$enc_iv);
+         case "Integer":
+            return openssl_encrypt($data,$method,$enc_key,$options,$enc_iv);
+         case "string":
+            return openssl_encrypt($data,$method,$enc_key,$options,$enc_iv);
+      }
    }
    protected
     function
-    aes_ctr_ssl_decrypt128( mixed $data)
+    aes_ctr_ssl_decrypt128( string | array | int $data)
    {
       $method = $this->method;
       $enc_key = $this->key;
       $options = $this->options;
       $enc_iv = $this->enc_iv;
-     return openssl_decrypt($data,$method,$enc_key,$options,$enc_iv);
+      switch
+      (gettype($data))
+      {
+         case "Array":
+            return openssl_decrypt($data,$method,$enc_key,$options,$enc_iv);
+         case "Integer":
+            return openssl_decrypt($data,$method,$enc_key,$options,$enc_iv);
+         case "string":
+            return openssl_decrypt($data,$method,$enc_key,$options,$enc_iv);
+      }
    }
 }
 // Class to handle media
@@ -221,34 +239,23 @@ class
       Compares Files in the database and compares them to the ones in the folder ,
       Then it deletes the irrelevant
    */
-   public
-   function
-   compareFiles()
-   {
-      self::connect();
-      $qr = $this->conn->prepare("SELECT profile_photo FROM `users`");
-      $qr->execute();
+   public function cleanFiles(){
+         $con = Database::vanillaConnect();
+         $imgs = mysqli_fetch_all(mysqli_query($con,"SELECT `profile_photo` from `users`"),MYSQLI_NUM);
 
-      // Returns an array
-      $photos  = $qr->fetchAll(PDO::FETCH_NUM);
-
-      $count = count($photos);
-      $phts = [];
-      for
-      ($i=0;$i<$count;$i++){
-         $p = self::aes_ctr_ssl_decrypt128(strval($photos[$i]));
-         $phts[$i]=$p;
-      }
-      $folder = glob("./media/img/*");
-      $files = glob($folder."/*");
-      foreach
-      ($files as $file):
-         if
-         (!in_array($file,$phts))
+         mysqli_close($con);
+         $photos = [];
+         for
+         (
+            $i=0;
+            $i<count($imgs);
+            $i++
+         )
          {
-            unlink($file);
+
+            $photos[$i] = self::aes_ctr_ssl_decrypt128(($imgs[$i]));
          }
-      endforeach;
+         var_dump($photos);
    }
 }
 class
