@@ -11,7 +11,6 @@ session_start();
 
 use FFI\Exception;
 
-
 class
  Database
 {
