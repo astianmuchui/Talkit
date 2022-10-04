@@ -215,9 +215,7 @@ class
             if
             (move_uploaded_file($tmp,$path))
             {
-
                return true;
-
             }
             else
             {
@@ -238,10 +236,38 @@ class
       Compares Files in the database and compares them to the ones in the folder ,
       Then it deletes the irrelevant
    */
-   public function cleanFiles(){
+   public function cleanFiles($path){
    //
+   $this->stmt = $this->conn->prepare("SELECT * FROM `users`");
+   $this->stmt->execute();
+   $data = $this->stmt->fetchAll(PDO::FETCH_OBJ);
+   $arr = [];
+      for
+      (
+         $i=0;
+         $i<count($data);
+         $i++
+      ){
+          $j = self::aes_ctr_ssl_decrypt128($data[$i]->profile_photo);
+         $img = self:: aes_ctr_ssl_decrypt128($j);
+         $arr[$i] = $img;
+      }
+      // return $arr;
+      $files = glob($path.'/*');
+
+      foreach
+      ($files as $file){
+         if
+         (in_array($file,$arr))
+         {
+            unlink($file);
+         }
+      }
+   }
+
 }
-}
+
+
 class
 Operations extends Database
 {
@@ -255,7 +281,8 @@ Operations extends Database
    {
       $q = "SELECT * FROM users WHERE `uname` = '$u' LIMIT 1";
       $result = mysqli_query(self::vanillaConnect(),$q);
-      if(mysqli_fetch_assoc($result))
+      if
+      (mysqli_fetch_assoc($result))
       {
          return true;
       }else{
@@ -455,6 +482,8 @@ Operations extends Database
        Compression
        Some weird security function for the files
    */
+
+   //  Will still work as an edit profile function
    public
    function
    setup_profile($id,$u,$n,$p,$b,$i,$t,$w,$l,$tmp)
@@ -471,14 +500,12 @@ Operations extends Database
          $this->twitter = self::aes_ctr_ssl_encrypt128($t);
          $this->website = self::aes_ctr_ssl_encrypt128($w);
          $this->linkedin = self::aes_ctr_ssl_encrypt128($l);
-
       if
       ($img==true)
       {
          $this->stmt = $this->conn->prepare("UPDATE `users` SET  `uname`=:u, `name`=:n,`profile_photo`=:p,`bio`=:b,`ig_handle`=:i,`tw_handle`=:t,`site`=:w,`linkedin`=:l WHERE `users`.`uid` = :id");
          try
          {
-
             $update =  $this->stmt->execute(['id'=>$id,'u'=>$this->uname,'n'=>$this->name,'p'=>$this->encImg,'b'=>$this->bio,'i'=>$this->instagram,'t'=>$this->twitter,'w'=>$this->website,'l'=>$this->linkedin]);
             if
             ($update)
@@ -488,6 +515,7 @@ Operations extends Database
                $sfns = new Session_Functions;
                $arr = $sfns->serve($_SESSION['name']);
                $photo = $arr['photo'];
+               $media->cleanFiles("../../core/media/img");
                header(
                   "Location: ../"
                );
@@ -511,10 +539,10 @@ Operations extends Database
          ($update)
          {
             $_SESSION['name'] = $this->uname;
+            $media->cleanFiles("../../core/media/img");
             header(
                "Location: ../"
             );
-
          }
       }
    }
