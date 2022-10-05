@@ -533,6 +533,7 @@ Operations extends Database
       }
       else
       {
+         
          $this->stmt = $this->conn->prepare("UPDATE `users` SET  `uname`=:u, `name`=:n,`bio`=:b,`ig_handle`=:i,`tw_handle`=:t,`site`=:w,`linkedin`=:l WHERE `users`.`uid` = :id");
          $update =  $this->stmt->execute(['id'=>$id,'u'=>$this->uname,'n'=>$this->name,'b'=>$this->bio,'i'=>$this->instagram,'t'=>$this->twitter,'w'=>$this->website,'l'=>$this->linkedin]);
          if
