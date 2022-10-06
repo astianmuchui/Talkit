@@ -253,9 +253,6 @@ class
       }
       // return $arr;
       $files = glob($path."/*");
-      var_dump($files);
-      echo "<br>";
-      var_dump($arr);
       foreach
       ($files as $file){
          if
@@ -265,9 +262,7 @@ class
          }
       }
    }
-
 }
-
 
 class
 Operations extends Database
@@ -458,15 +453,18 @@ Operations extends Database
             {
                  $unm = $row->uname;
                  $readable = self::aes_ctr_ssl_decrypt128($unm);
+
                  if
                  (stristr($readable,$str))
                  {
-                     $div = '
+                  $img = self::aes_ctr_ssl_decrypt128(self::aes_ctr_ssl_decrypt128($row->profile_photo));
+                  $bio = substr(self::aes_ctr_ssl_decrypt128($row->bio),0,80);
+                  $div = '
                      <div class="chat">
-                     <img src="../UI/img/avatar.png" alt="" height="30px" width="30px">
+                     <img src="../core/media/img/'.$img.'" alt="" height="30px" width="30px">
                      <div class="text">
                          <a  href="#" class="h">'.$readable.'</a> <br>
-                         <small>Lorem ipsum dolor sit amet consectetur adipisicing elit.</small>
+                         <small>'.$bio.'...</small>
                      </div>
                  </div>
                         ';
