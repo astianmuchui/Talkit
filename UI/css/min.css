@@ -1,6 +1,6 @@
 :root{
     --primary-color: #098ea0;
-    --theme-color : #cecdcd;
+    --theme-color : #f7f6f6;
     --shadow-color: #3e3e3e;
     --dark-color: #00030a;
 }
@@ -140,92 +140,6 @@ form input:checked{
     100%{
         opacity: 1;
     }
-}
-.chats-container h4{
-    color: var(--primary-color);
-}
- .chats-container .h h4{
-    color: var(--primary-color);
-}
- .chats-container .chats{
-    height: 60vh;
-    background-color: #cecdcde8;
-    display: flex;
-    flex-direction: column;
-    align-items: top;
-    padding-left:20px;
-    padding-top: 60px ;
-    overflow-y: auto;
-    overflow-x: hidden;
-    position:relative;
-    left: 20px;
-    top: 150px;
-}
-
- .chats-container .chats::-webkit-scrollbar{
-    background-color: transparent;
-    width: 2px;
-}
- .chats-container .chats::-webkit-scrollbar-thumb{
-    background-color: var(--primary-color);
-    width: 2px;
-}
-.chats-container .chats::-webkit-scrollbar:hover,
-.chats-container .chats::-webkit-scrollbar-thumb:hover{
-    width: 5px;
-}
-
- .chats-container .chats .chat{
-       width: 100%;
-       height: 45px;
-       background-color: #ffffff;
-       box-shadow: 1px 2px 2px 1px #b1b1b1;
-
-       transition: all 1s cubic-bezier(0.895, 0.03, 0.685, 0.22);
-       border-radius: 10px;
-       margin-bottom: 5px;
-       box-sizing: border-box;
-       padding: 10px 20px;
-       display: grid;
-       grid-template-columns: repeat(2,1fr);
-}
-
- .chats-container .chats .chat img{
-    background: var(--primary-color);
-    border-radius: 50%;
-}
- .chats-container .chats .chat .text{
-    position: relative;
-    text-transform: capitalize;
-    left: -270px;
-    width: 300%;
-}
-.chats-container .chats .chat .text .h{
-        color: var(--primary-color);
-        position: relative;
-        left: 0px;
-}
- .chats-container .chats .chat .text small{
-    font-size: 10px;
-    word-wrap: none;
-}
-
-::placeholder{
-    color: var(--primary-color);
-}
-.search-area form{
-    position: absolute;
-    top: 100px;
-    width: max-content;
-    left: 28%;
-}
-.search-area form input{
-    box-shadow: 1px 2px 2px 2px #dbdbdb;
-    width: 650px;
-    box-sizing: border-box;
-    padding: 5px 10px;
-    border-radius: 50px;
-    border: none;
 }
 form input:focus{
     outline: 0;

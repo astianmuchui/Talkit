@@ -1,0 +1,18 @@
+@import 'root';
+
+body{
+    background-color: $theme-color;
+    height: 90vh;
+    overflow: hidden;
+    box-sizing: border-box;
+
+    main{
+        margin-top: 5%;
+        background-color: darken($theme-color,1);
+        box-shadow: 1px 1px 3px 1px $shadow-color;
+        width: 80vw;
+        height: 90vh;
+        border-radius: 5px;
+    }
+}
+

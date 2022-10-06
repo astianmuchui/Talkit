@@ -34,12 +34,14 @@
                 ';
             }
             if
-            (strlen($unm)>12){
+            (strlen($unm)>=16)
+            {
+
                 $error = '
             <center>
             <div class="error" id="error">
                 <span class="flex-column" id="close">&times;</span>
-                <p class="err">Username must be lower than 12 characters</p>
+                <p class="err">Username must be lower than 16 characters</p>
             </div>
         </center>
             ';
@@ -55,7 +57,7 @@
             </center>
                 ';
             }
-            if(strlen($unm)<=12 && strlen($name)<=26 && strlen($bio)<=160){
+            if(strlen($unm)<=16 && strlen($name)<=26 && strlen($bio)<=160){
                 $ops->setup_profile($arr['id'],$unm,$name,$image,$bio,$ig,$tw,$wb,$ln,$tmp);
             }
     }
