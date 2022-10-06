@@ -4,9 +4,7 @@
    All rights reserved
    in development since  2020
    Production version
-
 */
-
 session_start();
 
 use FFI\Exception;
@@ -235,6 +233,7 @@ class
    /*
       Compares Files in the database and compares them to the ones in the folder ,
       Then it deletes the irrelevant
+      Ensures that only needed profile images are present
    */
    public function cleanFiles($path){
    //
@@ -476,14 +475,6 @@ Operations extends Database
             }
       }
    }
-   /*
-      TODO:
-      Delete initial profile photo
-      This is for memory management purposes + User data integrity
-      TO TRY:
-       Compression
-       Some weird security function for the files
-   */
 
    //  Will still work as an edit profile function
    public
