@@ -8,6 +8,9 @@ $dark-color: #00030a;
     list-style-type: none;
     font-weight: 500;
 }
+input,input:active{
+    outline: 0;
+}
 $cols:(1,2,3,4,5,6);
 @each $col in $cols{
 .grid-#{$col}{
@@ -85,7 +88,7 @@ header{
 body{
     margin: 0;
     padding: 0;
-    
+
 }
 .error{
     width: 450px;
@@ -128,6 +131,16 @@ body{
         opacity: 0;
     }
     100%{
+        opacity: 1;
+    }
+}
+@keyframes rise{
+    0%{
+        top: 5px;
+        opacity: 0;
+    }
+    100%{
+        top: 0;
         opacity: 1;
     }
 }

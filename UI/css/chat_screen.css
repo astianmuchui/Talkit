@@ -6,7 +6,7 @@
 }
 body {
     margin: 0;
-    padding: 0; 
+    padding: 0;
     box-sizing: border-box;
     overflow-x: none;
     background-image: url("../img/particles.png");
@@ -92,8 +92,6 @@ header div img{
     caret-color: var(--primary-color);
     position: sticky;
     z-index: 4;
-    
-    
     color: var(--primary-color);
 }
 ::placeholder{
@@ -133,7 +131,7 @@ header div img{
     border-radius: 10px;
     margin-bottom: 4px;
     /* background: url("../img/particles.png"); */
-    
+
 }
 .main-screen .container .chats .chat .text{
     display: flex;
@@ -192,10 +190,10 @@ header div img{
     top: 7px;
     color: rgb(241, 241, 241);
     font-size: 14px;
-    font-weight: 900;      
+    font-weight: 900;
 }
 .main-screen .chat-area .conv-screen .headin i{
-    color: #f3f3f3;   
+    color: #f3f3f3;
     padding: 5px 10px;
     border: 1px solid var(--primary-color);
     font-size: 16px;
@@ -234,9 +232,9 @@ header div img{
     border-radius: 10px 2px 10px 2px;
     display: flex;
     flex-direction: column;
-    align-items: center; 
-    align-content: center; 
-     justify-items: center; 
+    align-items: center;
+    align-content: center;
+     justify-items: center;
      justify-content: center;
     margin-bottom: auto;
 }
@@ -272,13 +270,13 @@ header div img{
     /* margin-bottom: 10px; */
 }
 .main-screen .chat-area .conv-screen .messages-cont .right-text i{
-    color: rgb(138, 39, 39);    
+    color: rgb(138, 39, 39);
     font-size: 12px;
     position: relative;
     float: right;
     right: 15px;}
 .main-screen .chat-area .conv-screen .messages-cont .left-text i{
-    color: rgb(138, 39, 39);    
+    color: rgb(138, 39, 39);
     font-size: 12px;
     position: relative;
     float: left;
@@ -305,7 +303,7 @@ header div img{
     z-index: 4;
     height: max-content;
     word-wrap: break-word;
-   
+
 }
 input:focus{
     outline: 0;

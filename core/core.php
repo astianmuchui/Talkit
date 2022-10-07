@@ -443,7 +443,7 @@ Operations extends Database
    {
       $this->stmt = $this->conn->prepare("SELECT * FROM `users`");
       $this->stmt->execute();
-      if
+   if
       (
          $rows = $this->stmt->fetchAll()
          )
@@ -454,7 +454,7 @@ Operations extends Database
                  $unm = $row->uname;
                  $readable = self::aes_ctr_ssl_decrypt128($unm);
 
-                 if
+               if
                  (stristr($readable,$str))
                  {
                   $img = self::aes_ctr_ssl_decrypt128(self::aes_ctr_ssl_decrypt128($row->profile_photo));
