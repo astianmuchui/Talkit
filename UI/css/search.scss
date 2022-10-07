@@ -45,8 +45,7 @@ body{
                         display: inline-flex;
                         width: 95%;
                         height: 45px;
-                        background-color: darken($theme-color,2);
-                        box-shadow: 1px 1px 3px 1px darken($theme-color,10);
+                        background-color: darken($theme-color,4);
                         box-sizing: border-box;
                         padding: 5px;
                         border-radius: 10px;

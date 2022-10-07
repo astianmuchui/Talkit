@@ -458,13 +458,24 @@ Operations extends Database
                  (stristr($readable,$str))
                  {
                   $img = self::aes_ctr_ssl_decrypt128(self::aes_ctr_ssl_decrypt128($row->profile_photo));
-                  $bio = substr(self::aes_ctr_ssl_decrypt128($row->bio),0,80);
+
+                  $bio = self::aes_ctr_ssl_decrypt128($row->bio);
+                  if
+                  (strlen($bio>100))
+                  {
+                     $bio = substr(self::aes_ctr_ssl_decrypt128($row->bio),0,120)."...";
+                  }
+                  else
+                  {
+                     $bio = $bio."...";
+                  }
+
                   $div = '
                      <div class="chat">
                      <img src="../core/media/img/'.$img.'" alt="" height="30px" width="30px">
                      <div class="text">
                          <a  href="#" class="h">'.$readable.'</a> <br>
-                         <small>'.$bio.'...</small>
+                         <small>'.$bio.'</small>
                      </div>
                  </div>
                         ';
