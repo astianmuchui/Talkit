@@ -110,8 +110,24 @@ body{
                 top: 5%;
                 width: 97%;
                 height: 60%;
-                background-color: lighten($theme-color,1);
+                background-color: lighten($theme-color,0.5);
                 border-radius: 5px;
+
+                .head{
+                    width: 100%;
+                    height: 42px;
+                    background-color: lighten($primary-color,5);
+                    border-radius: 5px 5px 0 0;
+                    display: inline-flex;
+                    box-sizing: border-box;
+                    padding-left: 10px;
+
+                    a:nth-child(2){
+                        position: relative;
+                        top: 5px;
+                        left: 10px;
+                    }
+                }
             }
         }
     }
