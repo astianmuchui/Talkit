@@ -184,10 +184,12 @@ body{
                 }
             }
             .right{
-                width: 68%;
+                width: 60%;
                 height: 90%;
-                margin-left: 1%;
+                margin-left: 3%;
                 border-radius: 5px;
+                position: relative;
+                top: -12px;
 
                 .chats{
                     position: relative;
@@ -198,7 +200,7 @@ body{
 
                     .chat{
                         display: inline-flex;
-                        width: 90%;
+                        width: 80%;
                         height: 45px;
                         background-color: darken($theme-color,4);
                         box-sizing: border-box;

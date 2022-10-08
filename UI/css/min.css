@@ -1,5 +1,5 @@
 :root{
-    --primary-color: #098ea0;
+    --primary-color: #05a3b8;
     --theme-color : #f7f6f6;
     --shadow-color: #3e3e3e;
     --dark-color: #00030a;
@@ -9,7 +9,6 @@ body {
     padding: 0;
     box-sizing: border-box;
     overflow-x: none;
-    /* background-color: var(--theme-color); */
     background-image: url("../img/particles.png");
 
 }
