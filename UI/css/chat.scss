@@ -177,7 +177,10 @@ body{
                     }
                 }
                 .chat-space{
-                    display: flex;
+
+                    display: grid;
+                    grid-template-rows: subgrid;
+                    grid-row-gap: 90px;
                     align-items: flex-start;
                     flex-direction: column;
                     background: rgb(218, 218, 218);
@@ -190,7 +193,6 @@ body{
                     .message-right{
                         width: 100%;
 
-                        
                         img{
                             position: absolute;
                             float: right;
