@@ -231,32 +231,23 @@ class
       }
    }
    /*
-      Compares Files in the database and compares them to the ones in the folder ,
-      Then it deletes the irrelevant
-      Ensures that only needed profile images are present
+      Delete old profile photo after the user changes  it to a new one
    */
    public function cleanFiles($path){
-   //
    $this->stmt = $this->conn->prepare("SELECT * FROM `users`");
    $this->stmt->execute();
    $data = $this->stmt->fetchAll(PDO::FETCH_OBJ);
    $arr = [];
-      for
-      (
-         $i=0;
-         $i<count($data);
-         $i++
-      ){
-          $j = self::aes_ctr_ssl_decrypt128($data[$i]->profile_photo);
-         $img = self:: aes_ctr_ssl_decrypt128($j);
+      for (  $i=0;  $i<count($data); $i++){
+         //First decryption
+          $layer1 = self::aes_ctr_ssl_decrypt128($data[$i]->profile_photo);
+          //Second Decryption
+         $img = self:: aes_ctr_ssl_decrypt128($layer1);
          $arr[$i] = $path."/".$img;
       }
-      // return $arr;
       $files = glob($path."/*");
-      foreach
-      ($files as $file){
-         if
-         (!in_array($file,$arr))
+      foreach($files as $file){
+         if(!in_array($file,$arr))
          {
             unlink($file);
          }
