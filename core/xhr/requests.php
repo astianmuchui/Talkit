@@ -1,12 +1,11 @@
 <?php
-   if($_SERVER["SERVER_REQUEST_METHOD"]!=="GET"){
-      http_response_code(403);
+   if($_SERVER["REQUEST_METHOD"]!=="GET"){
+      header("Location: ../../");
       exit;
-
-
    }else{
-   $str = $_GET['search'];
-   if($str){
+
+   if( isset($_GET['search'])){
+      $str = $_GET['search'];
       include "../core.php";
       $ops = new Operations;
       $ops->search($str);
