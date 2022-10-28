@@ -5,18 +5,12 @@
    in development since  2020
    Production version
 */
-// Prevent any type of server request methods
-// if($_SERVER["REQUEST_METHOD"]!=="GET"){
-//    header("Location: ../../");
-//    exit;
-// }else{
-// }
+
 session_start();
 
 use FFI\Exception;
 
-class
- Database
+class Database
 {
     private
    $dbname = "talkit_production";
