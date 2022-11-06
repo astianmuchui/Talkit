@@ -1,4 +1,5 @@
 <?php
+
 /*
    Author: Sebastian Muchui
    All rights reserved
@@ -12,29 +13,19 @@ use FFI\Exception;
 
 class Database
 {
-    private
-   $dbname = "talkit_production";
-   private
-   $dbhost = "localhost";
-   private
-   $dbuser = "root";
-   private
-   $pwd = "";
-   protected
-   $method = "AES-128-CTR";
-   protected
-   $options = 0;
-   protected
-   $enc_iv = '1234567891011121';
+   private $dbname = "talkit_production";
+   private $dbhost = "localhost";
+   private $dbuser = "root";
+   private $pwd = "";
+   protected $method = "AES-128-CTR";
+   protected $options = 0;
+   protected $enc_iv = '1234567891011121';
    //  Basic placeholders
-   protected
-   $key = '$2y$10$Lvh7toMVlSJjwmMHSZ5ULOWkFITbUuK6mr/NG2YKluolXTpI.lLbu';
-   protected
-   $pepper = '$2y$10$np7bVhRUeR5qQNDlAL.hOOvDaEwZdghmLpz8HjkVJnX0vJbmuyto2';
-   protected
-   $salt = '$2y$10$PYbF/lbCcZ5G4wK39svrRO0k2HM/rj.Iu8NqUxpcI01BmfIZq0J9e';
-    protected
-     function connect()
+   protected $key = '$2y$10$Lvh7toMVlSJjwmMHSZ5ULOWkFITbUuK6mr/NG2YKluolXTpI.lLbu';
+   protected $pepper = '$2y$10$np7bVhRUeR5qQNDlAL.hOOvDaEwZdghmLpz8HjkVJnX0vJbmuyto2';
+   protected $salt = '$2y$10$PYbF/lbCcZ5G4wK39svrRO0k2HM/rj.Iu8NqUxpcI01BmfIZq0J9e';
+
+   protected  function connect()
     {
    $this->conn = null;
    try
@@ -50,8 +41,7 @@ class Database
    }
    return $this->conn;
 }
-   protected
-   function vanillaConnect()
+   protected function vanillaConnect()
    {
       try
       {
@@ -64,17 +54,13 @@ class Database
       }
       return $this->db;
    }
-   protected
-   function
-   escapeChar($var)
+   protected function escapeChar($var)
    {
       self::vanillaConnect();
       $var = mysqli_real_escape_string($this->db,$var);
       return $var;
    }
-   protected
-    function
-    aes_ctr_ssl_encrypt128( string | array | int $data)
+   protected function aes_ctr_ssl_encrypt128( string | array | int $data)
    {
       $method = $this->method;
       $enc_key = $this->key;
@@ -92,9 +78,7 @@ class Database
             return openssl_encrypt($data,$method,$enc_key,$options,$enc_iv);
       }
    }
-   protected
-    function
-    aes_ctr_ssl_decrypt128( string | array | int $data)
+   protected function aes_ctr_ssl_decrypt128( string | array | int $data)
    {
       $method = $this->method;
       $enc_key = $this->key;
@@ -113,18 +97,13 @@ class Database
    }
 }
 // Class to handle media
-class
- Media extends Database
-{
-   public
-   function __construct()
-   {
+class Media extends Database {
+   public function __construct() {
       Database::connect();
    }
    public $enctd;
-   public
-   function
-   replicateFile($file="",$formats=[],$directory="",$tmp="")
+
+   public function replicateFile($file="",$formats=[],$directory="",$tmp="")
    {
       global $error;
       $error = NULL;
@@ -197,9 +176,7 @@ class
       formats[arr] -> An array of file extensions that you want
       directory-> The destination of the file
    */
-   public
-   function
-   UploadFile($file="",$folder="",$tmp="",$formats=[])
+   public function UploadFile($file="",$folder="",$tmp="",$formats=[])
    {
       $filename = basename($file);
       $path = $folder.$filename;
@@ -255,16 +232,13 @@ class
    }
 }
 
-class
-Operations extends Database
+class Operations extends Database
 {
    public
-   function __construct()
-   {
+   function __construct(){
       Database::connect();
    }
-   public
-    function user_exists($u)
+   public function user_exists($u)
    {
       $q = "SELECT * FROM users WHERE `uname` = '$u' LIMIT 1";
       $result = mysqli_query(self::vanillaConnect(),$q);
@@ -277,9 +251,7 @@ Operations extends Database
       }
       mysqli_close(self::vanillaConnect());
      }
-   protected
-   function
-   aes_ctr_ssl_encrypt128($data)
+   protected function aes_ctr_ssl_encrypt128($data)
    {
       $method = $this->method;
       $enc_key = $this->key;
@@ -288,9 +260,7 @@ Operations extends Database
       $this->iv_length = openssl_cipher_iv_length($method);
       return openssl_encrypt($data,$method,$enc_key,$options,$enc_iv);
    }
-   protected
-   function
-   aes_ctr_ssl_decrypt128($data)
+   protected function aes_ctr_ssl_decrypt128($data)
    {
       $method = $this->method;
       $enc_key = $this->key;
@@ -298,9 +268,7 @@ Operations extends Database
       $enc_iv = $this->enc_iv;
      return openssl_decrypt($data,$method,$enc_key,$options,$enc_iv);
    }
-   public
-   function
-   signup($unm,$pwd)
+   public function signup($unm,$pwd)
    {
         $unm = self::escapeChar($unm);
         $pwd = self::escapeChar(trim($pwd));
@@ -347,8 +315,7 @@ Operations extends Database
          }
       }
     }
-    public
-    function set_recovery($qn,$ans,$name)
+    public function set_recovery($qn,$ans,$name)
     {
       $qn = self::aes_ctr_ssl_encrypt128($qn);
       $ans = self::aes_ctr_ssl_encrypt128($ans);
@@ -367,8 +334,7 @@ Operations extends Database
          header("Location: ../");
       }
     }
-   public
-   function login($um,$pd)
+   public function login($um,$pd)
    {
       global $error;
       $this->name = self::aes_ctr_ssl_encrypt128(strtolower($um));
@@ -420,8 +386,7 @@ Operations extends Database
       }
       return $error;
    }
-   public
-   function logout()
+   public function logout()
    {
       session_destroy();
       header(
@@ -429,8 +394,7 @@ Operations extends Database
    );
    }
 
-   public
-   function search($str)
+   public function search($str)
    {
       $this->stmt = $this->conn->prepare("SELECT * FROM `users`");
       $this->stmt->execute();
@@ -477,9 +441,7 @@ Operations extends Database
    }
 
    //  Will still work as an edit profile function
-   public
-   function
-   setup_profile($id,$u,$n,$p,$b,$i,$t,$w,$l,$tmp)
+   public function setup_profile($id,$u,$n,$p,$b,$i,$t,$w,$l,$tmp)
    {
       // Encrypt all data
       $media = new Media;
@@ -526,7 +488,6 @@ Operations extends Database
       }
       else
       {
-
          $this->stmt = $this->conn->prepare("UPDATE `users` SET  `uname`=:u, `name`=:n,`bio`=:b,`ig_handle`=:i,`tw_handle`=:t,`site`=:w,`linkedin`=:l WHERE `users`.`uid` = :id");
          $update =  $this->stmt->execute(['id'=>$id,'u'=>$this->uname,'n'=>$this->name,'b'=>$this->bio,'i'=>$this->instagram,'t'=>$this->twitter,'w'=>$this->website,'l'=>$this->linkedin]);
          if
@@ -544,8 +505,7 @@ Operations extends Database
 class Session_Functions extends Database
 {
    // constructor
-   public
-   function __construct()
+   public function __construct()
    {
       Database::connect();
    }
@@ -556,9 +516,7 @@ class Session_Functions extends Database
          "Location: $u"
       );
    }
-   public
-   function
-   LoggedIn(){
+   public function LoggedIn(){
       if( $_SESSION['logged_in'] ==true){
          return true;
       }
@@ -567,8 +525,7 @@ class Session_Functions extends Database
          return false;
       }
    }
-   public
-   function fetchById($id)
+   public function fetchById($id)
    {
       if
       (gettype($id) == "integer")
@@ -594,9 +551,7 @@ class Session_Functions extends Database
          }
       }
    }
-   public
-   function
-   fetchByName($nm)
+   public function fetchByName($nm)
    {
       if
       (gettype($nm) == "string")
@@ -629,11 +584,9 @@ class Session_Functions extends Database
       }
    }
    // Function to serve user data more feasibly on pages
-   public
-   function
-    serve($variable)
+   public function serve($variable)
    {
-      // The function should take either a string or an int
+            // The function should take either a string or an int
       switch
       (
          gettype($variable)
