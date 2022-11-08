@@ -3,8 +3,6 @@
 /*
    Author: Sebastian Muchui
    All rights reserved
-   in development since  2020
-   Production version
 */
 
 session_start();
