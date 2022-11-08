@@ -601,5 +601,4 @@ class Session_Functions extends Database
       }
    }
 }
-
 ?>
