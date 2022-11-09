@@ -2,7 +2,6 @@
 
 /*
    Author: Sebastian Muchui
-   All rights reserved
 */
 
 session_start();
