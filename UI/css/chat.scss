@@ -95,64 +95,10 @@ body{
                 }
             }
         }
-        .chat-area{
-            width: 72vw;
-            height: 100vh;
-            .screen{
-                margin: 0 auto;
-                width: 100%;
-                height: 100%;
-                background-color: $theme-color;
-                border-radius: 10px;
-                .head{
-                    width: 100%;
-                    height: 50px;
-                    background-color: darken($theme-color,5);
-                    box-shadow: 1px 1px 2px darken($theme-color,2);
-                    a{
-                        width: 50%;
-                        height: 40px;
-                        display: inline-flex;
 
-                        img{
-                        border-radius: 50%;
-                        height: 40px;
-                        width: 40px;
-                        position: relative;
-                        top: 5px;
-                        left: 10px;
-                        }
-                        p{
-                            position: relative;
-                            left: 20px;
-                            top: -10px;
-                            color: $primary-color;
-                        }
-                    }
-                }
-                .messages-area{
-                    width: 100vw;
-                    height: 75%;
-
-                    overflow-y: auto;
-                    .message-container{
-                        width: 100%;
-                        height: max-content;
-                        padding-bottom: 10px;
-                        background-color: orange;
-                        overflow-y: auto;
-                        .message-left{
-                            overflow-y: auto;
-                            position: absolute;
-                            float: left;
-                            left: 10px;
-                        }
-                    }
-                }
-            }
 
         }
     }
 
 
-}
+
