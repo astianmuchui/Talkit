@@ -226,8 +226,6 @@ class Media extends Database {
             unlink($file);
          }
 
-
-         
       }
    }
 }
