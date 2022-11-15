@@ -228,7 +228,7 @@ class Media extends Database {
       }
    }
 }
-// Class to handle user authentication and other stuff
+// Class to handle user authentication and other user related functions
 class Operations extends Database
 {
    public
