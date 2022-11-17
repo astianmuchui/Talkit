@@ -22,8 +22,7 @@ class Database
    protected $pepper = '$2y$10$np7bVhRUeR5qQNDlAL.hOOvDaEwZdghmLpz8HjkVJnX0vJbmuyto2';
    protected $salt = '$2y$10$PYbF/lbCcZ5G4wK39svrRO0k2HM/rj.Iu8NqUxpcI01BmfIZq0J9e';
 
-   protected  function connect()
-    {
+   protected  function connect(){
    $this->conn = null;
    try
    {
@@ -64,8 +63,7 @@ class Database
       $options = $this->options;
       $enc_iv = $this->enc_iv;
       $this->iv_length = openssl_cipher_iv_length($method);
-      switch
-      (gettype($data))
+      switch(gettype($data))
       {
          case "Array":
             return openssl_encrypt($data,$method,$enc_key,$options,$enc_iv);
@@ -598,4 +596,5 @@ class Session_Functions extends Database
       }
    }
 }
+
 ?>
