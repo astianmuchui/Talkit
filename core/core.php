@@ -69,6 +69,7 @@ class Database
             return openssl_encrypt($data,$method,$enc_key,$options,$enc_iv);
          case "Integer":
             return openssl_encrypt($data,$method,$enc_key,$options,$enc_iv);
+            
          case "string":
             return openssl_encrypt($data,$method,$enc_key,$options,$enc_iv);
       }
