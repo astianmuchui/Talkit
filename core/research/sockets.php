@@ -1,5 +1,5 @@
 <?php
-// Implementation
+// Implementation of the chat in ws
 use Ratchet\WebSocket\WsServer;
 use Ratchet\Server\IoServer;
 
